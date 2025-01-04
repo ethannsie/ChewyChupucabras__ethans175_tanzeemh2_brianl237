@@ -44,7 +44,7 @@ pip install -r requirements.txt
 ```
 ## Launch Codes:
 1. Navigate to app folder of project directory
-```cd PATH/TO/SnazzySnappers__tanzeemh2_ethans175_lindaz44_nial24/app```
+```cd PATH/TO/ChewyChupucabras__ethans175_tanzeemh2_brianl237/app```
 2. Run app
 ```python3 __init__.py```
 3. Open firefox and go to the given link
