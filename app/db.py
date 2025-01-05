@@ -100,7 +100,7 @@ def getTableData(table, valueType, value):
     if result:
         return result
     else:
-        return None
+        return -1
 
 #Selected all user-specific matches
 def getGameHistory(userID):
@@ -113,7 +113,7 @@ def getGameHistory(userID):
     if result:
         return result
     else:
-        return None
+        return -1
 
 #Returning all data in any table
 def getTable(tableName):
