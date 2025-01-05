@@ -28,7 +28,7 @@ if (not os.path.isfile("chupaPokemon.db")):
 @app.route("/", methods=['GET', 'POST'])
 def home():
     passValue = 'username' in session
-    print(active_sessions)
+    print(db.getTable("users"))
     if 'username' in session:
         passUsers = {}
         for user in active_sessions:
@@ -41,8 +41,12 @@ def home():
 def register():
     username = request.form['username']
     password = request.form['password']
+    password2 = request.form.get('password2')
 
-    if db.getUserID(username) >= 0:
+    if password != password2:
+        flash("Passwords do not match", 'error')
+        return redirect("/")
+    elif db.getUserID(username) >= 0:
         flash("Username already exists", 'error')
         return redirect("/")
     else:
@@ -82,7 +86,24 @@ def chupadex():
 
 @app.route("/ladder")
 def ladder():
-    return render_template("ladder.html")
+    data = db.getTable("users")
+    userData = []
+    rankData = []
+    for user in data:
+        if [user[0], user[1], user[3]] not in userData:
+            userData.append([user[0], user[1], user[3]])
+            rankData.append(user[3])
+    print(rankData)
+    rankData.sort(reverse=True)
+    print(rankData)
+    passData = []
+    for rank in rankData:
+        for count, user in enumerate(userData):
+            if rank == user[2]:
+                passData.append([user[0],user[1],user[2]])
+                userData.pop(count)
+
+    return render_template("ladder.html", user_data=passData)
 
 if __name__ == '__main__':
     app.debug = True

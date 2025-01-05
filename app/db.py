@@ -13,9 +13,9 @@ DB_FILE = "chupaPokemon.db"
 def setup():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, created_at TEXT, last_login TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, rank INTEGER, created_at TEXT, last_login TEXT);")
     # Database holds all of the pokemon information for gen1
-    c.execute("CREATE TABLE IF NOT EXISTS pokeDex (poke_ID INTEGER PRIMARY KEY AUTOINCREMENT, poke_name TEXT, type_1 TEXT, type_2 TEXT, HP TEXT, ATK TEXT, DEF TEXT, SpATK TEXT, SpDEF TEXT, SpE TEXT, sprite_url TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS pokeDex (poke_ID INTEGER PRIMARY KEY AUTOINCREMENT, poke_name TEXT, type_1 TEXT, type_2 TEXT, HP INTEGER, ATK INTEGER, DEF INTEGER, SpATK INTEGER, SpDEF INTEGER, SpE INTEGER, sprite_url TEXT);")
     # Database keeps track of any six collection of pokemons from each game
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY AUTOINCREMENT, winner TEXT, loser TEXT, time_completed TEXT);")
@@ -30,7 +30,7 @@ def addUser(username, password):
     # datetime formatting for sqlite text
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # omits userID as an input as it autoincrements
-    c.execute("INSERT INTO users (username, password, created_at, last_login) VALUES (?, ?, ?, ?)", (username, password, created_at, created_at))
+    c.execute("INSERT INTO users (username, password, rank, created_at, last_login) VALUES (?, ?, ?, ?, ?)", (username, password, 1000, created_at, created_at))
     db.commit()
     db.close()
 

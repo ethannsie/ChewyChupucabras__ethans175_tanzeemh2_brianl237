@@ -38,10 +38,30 @@
 
     <!-- Main Content -->
     <main class="flex-grow container mx-auto p-8">
-        <div class="text-center">
-            <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the Chupamon Ladder!</h2>
-        </div>
-    </main>
+    <div class="text-center">
+        <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the Chupamon Ladder!</h2>
+    </div>
+
+    <table class="w-full table-auto border-collapse border border-gray-200">
+      <thead class="bg-blue-500 text-white">
+        <tr>
+          <th class="px-4 py-2 border border-gray-300">Rank</th>
+          <th class="px-4 py-2 border border-gray-300">Username</th>
+        </tr>
+      </thead>
+      <tbody id="ranking-body" class="text-gray-700">
+
+    {% for user in user_data %}
+    <tr class="odd:bg-gray-50 even:bg-gray-100">
+      <td class="px-4 py-2 text-center border border-gray-300"> {{user[2]}}</td>
+      <td class="px-4 py-2 text-center border border-gray-300">{{user[1]}}</td>
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+
+
+</main>
 
       <!-- Account Settings  -->
        <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
