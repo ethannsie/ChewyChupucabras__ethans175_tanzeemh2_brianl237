@@ -18,12 +18,43 @@ app = Flask(__name__)
 
 app.secret_key = os.urandom(32)
 
-if (not os.path.isfile("geoTracker.db")):
+if (not os.path.isfile("chupaPokemon.db")):
     db.setup() # sets up databases
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    return render_template("home.html")
+    passValue = 'username' in session
+    print(passValue)
+    return render_template("home.html", logged_in = passValue)
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    username = request.form['username']
+    password = request.form['password']
+    db.addUser(username, password)
+    return redirect('/')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    session['username'] = username
+    if 'username' in session:
+        db.updateLoginTime(session['username'])
+    return redirect('/')
+
+@app.route("/logout")
+def logout():
+    session.pop('username', None)
+    return redirect("/")
+
+@app.route("/chupadex")
+def chupadex():
+    return render_template("chupadex.html")
+
+@app.route("/ladder")
+def ladder():
+    return render_template("ladder.html")
 
 if __name__ == '__main__':
     app.debug = True

@@ -1,3 +1,8 @@
 ethanS -- 2024-01-04 19:13
 - Created basic repo structure of project
 - Added some basic code for database and flask
+
+ethanS -- 2024-01-04 20:33
+- Added html templates and slight javascript for animating logins
+- Added more routes
+- Doing this earlier for proof of concept to see if we can do a dual player CHUPAmon showdown match
