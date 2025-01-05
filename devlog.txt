@@ -6,3 +6,9 @@ ethanS -- 2024-01-04 20:33
 - Added html templates and slight javascript for animating logins
 - Added more routes
 - Doing this earlier for proof of concept to see if we can do a dual player CHUPAmon showdown match
+
+ethanS -- 2024-01-04 22:32
+- Added flash messages
+- Added queue list recognition of multiple active sessions
+- Some more tailwind css styling
+- Note: this should hypothetically work, but will need to create a game sessions to test
