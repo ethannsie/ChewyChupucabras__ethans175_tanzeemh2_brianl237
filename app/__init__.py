@@ -44,6 +44,7 @@ def register():
         return redirect("/")
     else:
         session['username'] = username
+        active_sessions[session['username']] = db.getUserID(session['username'])
         flash("Registered Sucessfully!", "success")
         db.addUser(username, password)
         return redirect("/")
@@ -55,7 +56,7 @@ def login():
 
     if username in active_sessions:
         flash("You already have an active session.", 'error')
-    elif db.getUserID(username) >= 0:
+    elif db.getUserID(username) >= 0 and db.getTableData("users", "username", username)[2] == password:
         session['username'] = username
         active_sessions[session['username']] = db.getUserID(session['username'])
         db.updateLoginTime(session['username'])
