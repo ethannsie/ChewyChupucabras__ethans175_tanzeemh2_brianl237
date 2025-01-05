@@ -1,4 +1,4 @@
-# SnazzySnappers - Tanzeem Hasan, Ethan Sie, Brian Liu
+# ChewyChupucabras - Tanzeem Hasan, Ethan Sie, Brian Liu
 # SoftDev
 # P02:
 # 2024-01-XX
@@ -15,10 +15,12 @@ def setup():
     c = db.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, created_at TEXT, last_login TEXT);")
     # Database holds all of the pokemon information for gen1
-    c.execute("CREATE TABLE IF NOT EXISTS pokeDex (history_id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, search_type TEXT, location_name TEXT, search_time TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS pokeDex (poke_ID INTEGER PRIMARY KEY AUTOINCREMENT, poke_name TEXT, type_1 TEXT, type_2 TEXT, HP TEXT, ATK TEXT, DEF TEXT, SpATK TEXT, SpDEF TEXT, SpE TEXT, sprite_url TEXT);")
     # Database keeps track of any six collection of pokemons from each game
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY AUTOINCREMENT, winner TEXT, loser TEXT, time_completed TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER);")
+    c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
     db.commit()
     db.close()
 
@@ -54,15 +56,35 @@ def getUserID(username):
     else:
         return -1
 
+def updateMoves(move_id, name, move_type, power, accuracy, pp):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO moves (id, name, type, power, accuracy, pp) VALUES (?, ?, ?, ?, ?, ?)", (move_id, name, move_type, power, accuracy, pp))
+    db.commit()
+    db.close()
+
+def updatePokeMove(pokemon_name, move_id):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO pokemon_moves (poke_name, move_id) VALUES (?, ?)", (pokemon_name, move_id))
+    db.commit()
+    db.close()
+
 def updateGameHistory(game_number, winner, loser, current_time):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     winnerID = getUserID(winner)
     loserID = getUserID(loser)
-    c.execute("INSERT INTO userHistory (game_ID, winner, loser, time_completed) VALUES (?, ?, ?, ?)", (game_number, winnerID, loserID, current_time))
+    c.execute("INSERT INTO gameHistory (game_ID, winner, loser, time_completed) VALUES (?, ?, ?, ?)", (game_number, winnerID, loserID, current_time))
     db.commit()
     db.close()
 
+def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO pokeDex (poke_name, type_1, type_2, HP, ATK, DEF, SpATK, SpDEF, SpE, sprite_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url))
+    db.commit()
+    db.close()
 
 # Database Manipulation
 

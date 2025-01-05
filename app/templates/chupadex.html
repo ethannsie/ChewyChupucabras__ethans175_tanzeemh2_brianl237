@@ -1,5 +1,5 @@
 <!--
- SnazzySnappers - Tanzeem Hasan, Ethan Sie, Brian Liu
+ ChewyChupucabras - Tanzeem Hasan, Ethan Sie, Brian Liu
  SoftDev
  P02:
  2024-01-XX
@@ -38,10 +38,28 @@
 
     <!-- Main Content -->
     <main class="flex-grow container mx-auto p-8">
-        <div class="text-center">
-            <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
+    <div class="text-center">
+        <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
+    </div>
+    <!-- Pokémon Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for pokemon in pokemon_data %}
+        <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+            <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
+            <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
+            <p class="text-sm text-gray-400">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
+            <div class="mt-4 text-gray-400 text-sm">
+                <p>HP: {{ pokemon[4] }}</p>
+                <p>ATK: {{ pokemon[5] }}</p>
+                <p>DEF: {{ pokemon[6] }}</p>
+                <p>SpATK: {{ pokemon[7] }}</p>
+                <p>SpDEF: {{ pokemon[8] }}</p>
+                <p>Speed: {{ pokemon[9] }}</p>
+            </div>
         </div>
-    </main>
+        {% endfor %}
+    </div>
+</main>
 
       <!-- Account Settings  -->
        <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
