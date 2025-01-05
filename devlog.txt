@@ -1,0 +1,3 @@
+ethanS -- 2024-01-04 19:13
+- Created basic repo structure of project
+- Added some basic code for database and flask
