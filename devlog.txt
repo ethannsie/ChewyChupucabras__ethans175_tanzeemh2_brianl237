@@ -12,3 +12,8 @@ ethanS -- 2024-01-04 22:32
 - Added queue list recognition of multiple active sessions
 - Some more tailwind css styling
 - Note: this should hypothetically work, but will need to create a game sessions to test
+
+ethanS -- 2024-01-05 14:56
+- Added chupaDex API processing
+- Added moves processing
+- Will be testing multi-browser (networking???) capabilities

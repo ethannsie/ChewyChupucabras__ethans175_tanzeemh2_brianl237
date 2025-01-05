@@ -1,4 +1,4 @@
-# SnazzySnappers - Tanzeem Hasan, Ethan Sie, Brian Liu
+# ChewyChupucabras - Tanzeem Hasan, Ethan Sie, Brian Liu
 # SoftDev
 # P02:
 # 2024-01-XX
@@ -21,6 +21,9 @@ active_sessions = {}
 
 if (not os.path.isfile("chupaPokemon.db")):
     db.setup() # sets up databases
+    APIs.fetch_poke()
+    APIs.fetch_moves()
+    print(db.getTable("pokeDex"))
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -75,7 +78,7 @@ def logout():
 
 @app.route("/chupadex")
 def chupadex():
-    return render_template("chupadex.html")
+    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"))
 
 @app.route("/ladder")
 def ladder():
