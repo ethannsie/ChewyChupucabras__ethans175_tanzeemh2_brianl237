@@ -25,3 +25,6 @@ ethanS -- 2025-01-05 17:40
 
 brianL -- 2025-01-07 00:24
 - Updated flag
+
+ethanS -- 2025-01-07 13:11
+- Added new html sites and new routing for them
