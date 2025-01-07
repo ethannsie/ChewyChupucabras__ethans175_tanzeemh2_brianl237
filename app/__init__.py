@@ -105,6 +105,14 @@ def ladder():
 
     return render_template("ladder.html", user_data=passData)
 
+@app.route("/history")
+def history():
+    return render_template("history.html")
+
+@app.route("/game")
+def game():
+    return render_template("game.html")
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
