@@ -25,7 +25,7 @@ Must have Git and Python installed beforehand.
 3. Open the terminal on your local machine and navigate to the desired directory
 4. Clone the repository in the corresponding directory:
 ```
-git clone https://github.com/thasan50/SnazzySnappers__tanzeemh2_ethans175_lindaz44_nial24.git
+git clone https://github.com/ethannsie/ChewyChupucabras__ethans175_tanzeemh2_brianl237.git
 ```
 5. Setup a virtual environment
 ```
@@ -36,7 +36,7 @@ python3 -m venv <name>
 . <name>/bin/activate
 ```
 7. cd into the repo, ```
-cd PATH/TO/SnazzySnappers__tanzeemh2_ethans175_lindaz44_nial24```
+cd PATH/TO/ChewyChupucabras__ethans175_tanzeemh2_brianl237```
 
 8. Install required packages
 ```
