@@ -32,3 +32,6 @@ ethanS -- 2025-01-07 13:11
 ethanS -- 2025-01-07 15:20
 - Created new tables to manage games
 - Reoganized tables
+
+ethanS -- 2025-01-07 22:39
+- Updated main README with tasks
