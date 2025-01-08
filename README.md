@@ -1,34 +1,12 @@
 # Chupamon Showdown by ChewyChupucabras
 
 ## Roster:
-Ethan Sie:
-- Database lead
-- Basic site setup
-  - Creating base tailwind for overall site design
-  - SQLite db setup
-  - Ensures all program file templates are accessible and ready for use
-- Create the matching system through a dictionary of tracked active sessions
-- Ensure turn-based system is working through database-tracked turns/games
-- Will help to catch up with any other work
+- Project Manager | Ethan Sie: Database lead
+- Tanzeem Hasan: Javascript lead for more intricate animations and website responsiveness 
+- Brian Liu: Tailwind (style) lead for more intricate designs
 
-Tanzeem Hasan: 
-- Javascript lead for more intricate animations and website capabilities 
-  - Dynamic response design in the game page
-  - Working with Ethan to create the mechanics behind the actual game component
-- Ensure cleanliness of database code (as we are spending a lot of time populating the db)
-- Determine settings that can be toggled in account settings
-  - Possibly creating light/dark modes or more user customization to the site design
-
-Brian Liu:
-- Tailwind (css) lead for more intricate designs
-  - The game page
-  - Ladder (ranking) page
-  - Handling dialogue output throughout the matches
-- Handling damage calculations
-- Creating a system for point calculations (elo) based on wins/loss, pokemon alive, etc
-- Designing and adding responsiveness to match history page
-
-## Project Description:
+## Site Description:
+This project is a recreation of Pokemon Showdown (some might say better). Users will be able to battle other users with Chupamon (Chupa + Pokemon). Upon logging in, users are automatically entered into an active session list, where any other active user may challenge someone on the list. If the challenge is accepted, then both players will be placed in a battle with six random Pokemon each that follow standard Pokemon rules (users can choose a move on their turn, with the turn order based on Pokemon speed, etc). We will be simplifying the game by removing abilities, items, etc. A ChupaDex will be provided that displays information about all the Pokemon available. Users can also view their match history and a leaderboard.
 
 ## Install Guide:
 ### Prerequisites:
