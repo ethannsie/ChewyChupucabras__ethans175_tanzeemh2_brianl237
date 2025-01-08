@@ -35,3 +35,6 @@ ethanS -- 2025-01-07 15:20
 
 ethanS -- 2025-01-07 22:39
 - Updated main README with tasks
+
+tanzeemH -- 2025-01-08 02:50
+- Created site and component maps for design doc
