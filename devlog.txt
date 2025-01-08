@@ -38,3 +38,10 @@ ethanS -- 2025-01-07 22:39
 
 tanzeemH -- 2025-01-08 02:50
 - Created site and component maps for design doc
+
+ethanS -- 2025-01-08 15:46
+- Updated design doc
+- Adjusted database to avoid redundency (new table: gamePokeStats, derived from gamePokeSets with new move parameters)
+- Adjusted old diagram with dbdiagram.io 
+- Added accessibility comments on each route (semi-accessibility, must log in, doesn't need log in)
+- Added more description on routes (answered questions written down)
