@@ -1,5 +1,5 @@
 # Chupamon Showdown by ChewyChupucabras
----
+
 ## Roster:
 Ethan Sie:
 - Database lead
