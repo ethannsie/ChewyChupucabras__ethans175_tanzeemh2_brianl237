@@ -2,13 +2,31 @@
 ---
 ## Roster:
 Ethan Sie:
-- something
+- Database lead
+- Basic site setup
+  - Creating base tailwind for overall site design
+  - SQLite db setup
+  - Ensures all program file templates are accessible and ready for use
+- Create the matching system through a dictionary of tracked active sessions
+- Ensure turn-based system is working through database-tracked turns/games
+- Will help to catch up with any other work
 
-Tanzeem Hasan:
-- something
+Tanzeem Hasan: 
+- Javascript lead for more intricate animations and website capabilities 
+  - Dynamic response design in the game page
+  - Working with Ethan to create the mechanics behind the actual game component
+- Ensure cleanliness of database code (as we are spending a lot of time populating the db)
+- Determine settings that can be toggled in account settings
+  - Possibly creating light/dark modes or more user customization to the site design
 
 Brian Liu:
-- something
+- Tailwind (css) lead for more intricate designs
+  - The game page
+  - Ladder (ranking) page
+  - Handling dialogue output throughout the matches
+- Handling damage calculations
+- Creating a system for point calculations (elo) based on wins/loss, pokemon alive, etc
+- Designing and adding responsiveness to match history page
 
 ## Project Description:
 
