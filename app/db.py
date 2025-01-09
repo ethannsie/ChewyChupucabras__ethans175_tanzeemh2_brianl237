@@ -112,6 +112,13 @@ def getTableData(table, valueType, value):
         return result
     else:
         return -1
+#Updates a value in a table with a new value
+def setTableData(table, updateValueType, newValue, valueType, value):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE {table} SET {updateValueType} = '{newValue}' WHERE {valueType} = ?", (value,))
+    db.commit()
+    db.close()
 
 #Selected all user-specific matches
 def getGameHistory(userID):
@@ -142,3 +149,4 @@ def resetTable(tableName):
     c.execute("DELETE FROM " + tableName)
     db.commit()
     db.close()
+

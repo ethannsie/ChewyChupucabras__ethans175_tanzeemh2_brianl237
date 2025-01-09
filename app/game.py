@@ -37,9 +37,3 @@ def damageCalc(move, attacker, reciever):
     #print(f"atk: {attackerATK}, def: {recieverDEF}, stab: {stab}, rng: {rng}")
 
     return (((((((2.0 * pokeLevel * crtical) / 5) + 2) * movePower * attackerATK / recieverDEF) / 50) + 2) * stab * type1 * type2 * rng)
-
-#updates elo based on the latest game played
-def updateElo():
-    winner = ''
-    loser = ''
-    return
