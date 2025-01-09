@@ -45,3 +45,11 @@ ethanS -- 2025-01-08 15:46
 - Adjusted old diagram with dbdiagram.io 
 - Added accessibility comments on each route (semi-accessibility, must log in, doesn't need log in)
 - Added more description on routes (answered questions written down)
+
+brianL -- 2025-01-09 8:06
+- updated moves table and API.py to include the damage class of the move
+- separated gamePokeSets table into 2 tables based on design doc
+- renamed a column in gameChallenge table to prevent a syntax error
+- added placeholder functions in game.py that could be used later
+- added a function in game.py that calculates damage
+- Note: may need to implement HP scaling based on level 
