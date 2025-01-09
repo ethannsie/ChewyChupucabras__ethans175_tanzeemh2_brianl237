@@ -56,3 +56,6 @@ brianL -- 2025-01-09 8:06
 
 brianL -- 2025-01-09 8:58
 - added db function to update tables
+
+ethanS -- 2025-1-09 10:58
+- Started to work on user interactions for challenging
