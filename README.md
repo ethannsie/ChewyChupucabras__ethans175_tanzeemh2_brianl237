@@ -6,7 +6,7 @@
 - Brian Liu: Tailwind (style) lead for more intricate designs
 
 ## Site Description:
-This project is a recreation of Pokemon Showdown (some might say better). Users will be able to battle other users with Chupamon (Chupa + Pokemon). Upon logging in, users are automatically entered into an active session list, where any other active user may challenge someone on the list. If the challenge is accepted, then both players will be placed in a battle with six random Pokemon each that follow standard Pokemon rules (users can choose a move on their turn, with the turn order based on Pokemon speed, etc). We will be simplifying the game by removing abilities, items, etc. A ChupaDex will be provided that displays information about all the Pokemon available. Users can also view their match history and a leaderboard.
+This project is a recreation of Pokemon Showdown (some might say better). Users will be able to battle other users with Chupamon (Chupa + Pokemon). Upon logging in, users are automatically entered into an active session list, where any other active user may challenge someone on the list. If the challenge is accepted, then both players will be placed in a battle with six random Pokemon each that follow standard Pokemon rules (users can choose a move on their turn, with the turn order based on Pokemon speed, etc). We will be simplifying the game by removing abilities, items, etc. A ChupaDex will be provided that displays information about all the Chupamon available. Users can also view their match history and a leaderboard.
 
 ## Install Guide:
 ### Prerequisites:
