@@ -10,6 +10,7 @@ import sqlite3
 import sys
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import db
+import game
 import APIs
 import json
 
@@ -24,6 +25,7 @@ if (not os.path.isfile("chupaPokemon.db")):
     APIs.fetch_poke()
     APIs.fetch_moves()
     print(db.getTable("pokeDex"))
+
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
