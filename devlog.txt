@@ -53,3 +53,6 @@ brianL -- 2025-01-09 8:06
 - added placeholder functions in game.py that could be used later
 - added a function in game.py that calculates damage
 - Note: may need to implement HP scaling based on level 
+
+brianL -- 2025-01-09 8:58
+- added db function to update tables
