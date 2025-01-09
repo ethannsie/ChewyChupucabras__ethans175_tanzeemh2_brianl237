@@ -74,7 +74,7 @@ def login():
         flash("Incorrect username or password.", 'error')
     return redirect("/")
 
-@app.route("/logout")
+@app.route("/logout", methods=['GET', 'POST'])
 def logout():
     if 'username' in session:
         flash("Logged out", 'success')
@@ -82,11 +82,11 @@ def logout():
         session.pop('username', None)
     return redirect("/")
 
-@app.route("/chupadex")
+@app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
     return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"))
 
-@app.route("/ladder")
+@app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
     data = db.getTable("users")
     userData = []
@@ -107,13 +107,21 @@ def ladder():
 
     return render_template("ladder.html", user_data=passData)
 
-@app.route("/history")
+@app.route("/history", methods=['GET', 'POST'])
 def history():
     return render_template("history.html")
 
-@app.route("/game")
+@app.route("/game", methods=['GET', 'POST'])
 def game():
     return render_template("game.html")
+
+@app.route("/challenge", methods=['GET', 'POST'])
+def challenge():
+    print("Hi")
+    db.updateChallengeInitial("gameChallenge", "challenger", session['username'], )
+    # if db.getTableData("gameChallenge", ):
+    return redirect('/')
+
 
 if __name__ == '__main__':
     app.debug = True

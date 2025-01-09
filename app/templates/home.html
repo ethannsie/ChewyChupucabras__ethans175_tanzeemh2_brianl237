@@ -145,12 +145,15 @@
          <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
             {% if logged_in %}
             <h3 class="text-2xl font-bold mb-4">Queue List</h3>
+            <form action="/challenge" method="POST" class="space-y-4">
             {% for user in activeUsers %}
-            <li>{{ user }}</li>
+            Challenge Now:
+            <ul> &nbsp - <button type="submit" onclick="toggleHidden('play')" class="text-gray-400 hover:text-white">{{ user }}</button></ul>
             {% endfor %}
             {% else %}
             <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
             {% endif %}
+          </form>
             <div class="flex justify-between items-center">
                <button type="button" onclick="toggleHidden('play')" class="text-gray-400 hover:text-white">Cancel</button>
             </div>
