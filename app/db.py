@@ -19,6 +19,8 @@ def setup():
     # Integrate both of them together to randomly select the 4 moves each pokemon will get
     c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER, class_type TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
+    # Database holds all of the pokemon types with their type matchups
+    c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY, type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], double_dmg_from TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_to TEXT [], no_dmg_from TEXT []);")
 
 
     # Database to track what games are being challenged
@@ -149,4 +151,3 @@ def resetTable(tableName):
     c.execute("DELETE FROM " + tableName)
     db.commit()
     db.close()
-
