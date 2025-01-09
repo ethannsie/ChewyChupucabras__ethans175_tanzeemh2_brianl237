@@ -17,16 +17,18 @@ def setup():
     # Database holds all of the pokemon information for gen1; allows 6 pokemons to be chosen
     c.execute("CREATE TABLE IF NOT EXISTS pokeDex (poke_ID INTEGER PRIMARY KEY AUTOINCREMENT, poke_name TEXT, type_1 TEXT, type_2 TEXT, HP INTEGER, ATK INTEGER, DEF INTEGER, SpATK INTEGER, SpDEF INTEGER, SpE INTEGER, sprite_url TEXT);")
     # Integrate both of them together to randomly select the 4 moves each pokemon will get
-    c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER);")
+    c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER, class_type TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
 
 
     # Database to track what games are being challenged
-    c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted? TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted_status TEXT);")
     # Creates game_id (marks the start of the game) and tracks end results of each game, will also act as the main match history database
     c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY AUTOINCREMENT, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
+    # Database keeps track of all six collection of pokemons from each game
+    c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game
-    c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT, hp1 REAL, hp2 REAL, hp3 REAL, hp4 REAL, hp5 REAL, hp6 REAL);")
+    c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER PRIMARY KEY, poke_name TEXT, active_hp REAL, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT);")
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
     c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
@@ -65,10 +67,10 @@ def getUserID(username):
     else:
         return -1
 
-def updateMoves(move_id, name, move_type, power, accuracy, pp):
+def updateMoves(move_id, name, move_type, power, accuracy, pp, class_type):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO moves (id, name, type, power, accuracy, pp) VALUES (?, ?, ?, ?, ?, ?)", (move_id, name, move_type, power, accuracy, pp))
+    c.execute("INSERT INTO moves (id, name, type, power, accuracy, pp, class_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (move_id, name, move_type, power, accuracy, pp, class_type))
     db.commit()
     db.close()
 

@@ -34,9 +34,9 @@ def fetch_moves():
                 power = move_details['power'] if move_details['power'] else None
                 accuracy = move_details['accuracy'] if move_details['accuracy'] else None
                 pp = move_details['pp']
-
+                class_type = move_details['damage_class']['name'] if move_details['damage_class']['name'] else None
                 # Insert move into the database
-                db.updateMoves(move_id, name, move_type, power, accuracy, pp)
+                db.updateMoves(move_id, name, move_type, power, accuracy, pp, class_type)
 
                 # Fetch Pokémon that can learn the move
                 for learn_method in move_details['learned_by_pokemon']:
