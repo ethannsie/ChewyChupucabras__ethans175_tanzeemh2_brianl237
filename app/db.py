@@ -97,6 +97,20 @@ def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, sp
     db.commit()
     db.close()
 
+def updateChallengeInitial(username):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO gameChallenge (challenger) VALUES (?)", (username,))
+    db.commit()
+    db.close()
+
+def updateChallengeFinal(challenged, accepted_status):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO gameChallenge (challenged, accepted_status) VALUES (?, ?)", (challenged, accepted_status))
+    db.commit()
+    db.close()
+
 # Database Manipulation
 
 #Selecting specific argument-based data
@@ -149,4 +163,3 @@ def resetTable(tableName):
     c.execute("DELETE FROM " + tableName)
     db.commit()
     db.close()
-
