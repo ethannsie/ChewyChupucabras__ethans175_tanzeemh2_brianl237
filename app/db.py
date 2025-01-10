@@ -20,7 +20,7 @@ def setup():
     c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER, class_type TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
     # Database holds all of the pokemon types with their type matchups
-    c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY, type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], double_dmg_from TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_to TEXT [], no_dmg_from TEXT []);")
+    c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_from TEXT [], no_dmg_to TEXT []);")
 
 
     # Database to track what games are being challenged
@@ -80,6 +80,13 @@ def updatePokeMove(pokemon_name, move_id):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO pokemon_moves (poke_name, move_id) VALUES (?, ?)", (pokemon_name, move_id))
+    db.commit()
+    db.close()
+
+def updateTypes(type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom,nodmgto):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO types (type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_from TEXT [], no_dmg_to TEXT []) VALUES (?, ?, ?, ?, ?, ?, ?)", (type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom, nodmgto))
     db.commit()
     db.close()
 

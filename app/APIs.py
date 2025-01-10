@@ -68,15 +68,21 @@ def fetch_poke():
                 db.updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url)
 
 def fetch_type():
-        pokemon_url = "https://pokeapi.co/api/v2/type/1/"
-        pokemon_data = fetch_data(pokemon_url)
+        pokemon_url = "https://pokeapi.co/api/v2/type/"
+        type_data = fetch_data(pokemon_url)
 
-        if pokemon_data:
-            for matchup in pokemon_data['damage_relations']:
-                if matchup:
+        if type_data:
+            for type in type_data['results']:
+                type_details = fetch_data(type['url'])
+                if type_details:
                     type_matchup_list = []
-                    for type in pokemon_data['damage_relations'][matchup]:
-                        type.matchup_list.append(type['name'])
-            print(type_matchup_list)
+                    for matchup in type_details['damage_relations']:
+                        matchups = []
+                        for type in type_details['damage_relations'][matchup]:
+                            matchups.append(type['name'])
+                        type_matchup_list.append(matchups)
+                db.updateTypes(type_matchup_list)
+
+#[['fighting'], [], [], ['rock', 'steel'], ['ghost'], ['ghost']]
 
 fetch_type()
