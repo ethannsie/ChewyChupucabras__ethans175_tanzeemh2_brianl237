@@ -57,5 +57,10 @@ brianL -- 2025-01-09 8:06
 brianL -- 2025-01-09 8:58
 - added db function to update tables
 
-ethanS -- 2025-1-09 10:58
+ethanS -- 2025-01-09 10:58
 - Started to work on user interactions for challenging
+
+ethanS -- 2025-01-10 10:56
+- Continued working on challenging
+- Successfully finished creating the challenge and updating db functions
+- Still need to finish accepting a challenge and rerouting to game.html

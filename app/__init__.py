@@ -95,9 +95,7 @@ def ladder():
         if [user[0], user[1], user[3]] not in userData:
             userData.append([user[0], user[1], user[3]])
             rankData.append(user[3])
-    print(rankData)
     rankData.sort(reverse=True)
-    print(rankData)
     passData = []
     for rank in rankData:
         for count, user in enumerate(userData):
@@ -117,11 +115,20 @@ def game():
 
 @app.route("/challenge", methods=['GET', 'POST'])
 def challenge():
-    print("Hi")
-    db.updateChallengeInitial("gameChallenge", "challenger", session['username'], )
-    # if db.getTableData("gameChallenge", ):
+    db.updateChallengeInitial(session['username'], request.form['username'])
     return redirect('/')
 
+@app.route("/accept_your_fate", methods=['GET', 'POST'])
+def accept_your_fate():
+    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+        db.updateChallengeFinal("Yes", request.form['username'], session['username'])
+    return redirect('/')
+
+@app.route("/reject_your_fate", methods=['GET', 'POST'])
+def reject_your_fate():
+    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+        db.updateChallengeFinal("No", request.form['username'], session['username'])
+    return redirect('/')
 
 if __name__ == '__main__':
     app.debug = True
