@@ -10,7 +10,7 @@ import sqlite3
 import sys
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import db
-import game
+#import game
 import APIs
 import json
 
@@ -20,11 +20,13 @@ app = Flask(__name__)
 app.secret_key = os.urandom(32)
 active_sessions = {}
 
-if (not os.path.isfile("chupaPokemon.db")):
-    db.setup() # sets up databases
-    APIs.fetch_poke()
-    APIs.fetch_moves()
-    print(db.getTable("pokeDex"))
+os.remove("chupaPokemon.db")
+#if (not os.path.isfile("chupaPokemon.db")):
+db.setup() # sets up databases
+APIs.fetch_poke()
+APIs.fetch_moves()
+APIs.fetch_type()
+print(db.getTable("pokeDex"))
 
 
 @app.route("/", methods=['GET', 'POST'])
