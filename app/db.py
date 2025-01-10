@@ -97,17 +97,17 @@ def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, sp
     db.commit()
     db.close()
 
-def updateChallengeInitial(username):
+def updateChallengeInitial(user1, user2):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO gameChallenge (challenger) VALUES (?)", (username,))
+    c.execute("INSERT INTO gameChallenge (challenger, challenged) VALUES (?, ?)", (user1,user2))
     db.commit()
     db.close()
 
-def updateChallengeFinal(challenged, accepted_status):
+def updateChallengeFinal(accepted_status, challenger, challenged):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO gameChallenge (challenged, accepted_status) VALUES (?, ?)", (challenged, accepted_status))
+    c.execute("UPDATE gameChallenge SET accepted_status = ? WHERE challenger = ? AND challenged = ?", (accepted_status, challenger, challenged))
     db.commit()
     db.close()
 
@@ -133,6 +133,15 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     c.execute(f"UPDATE {table} SET {updateValueType} = '{newValue}' WHERE {valueType} = ?", (value,))
     db.commit()
     db.close()
+
+#Updates a value in a table with a new value
+def getTableData(table, newValue, valueType, value):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE {table} GET {newValue} WHERE {valueType} = ?", (value,))
+    db.commit()
+    db.close()
+
 
 #Selected all user-specific matches
 def getGameHistory(userID):
