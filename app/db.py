@@ -58,10 +58,22 @@ def updateLoginTime(username):
 def getUserID(username):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("SELECT user_id FROM users WHERE username = ?", (username,))
+    c.execute("SELECT FROM users WHERE username = ?", (username,))
     result = c.fetchone()
     db.close()
     # check in case there is an error in fetching data
+    if result:
+        return result[0]
+    else:
+        return -1
+
+def getPokemonID(id):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM pokeDex WHERE poke_id=?", id)
+    result = c.fetchone()
+    db.commit()
+    db.close()
     if result:
         return result[0]
     else:
@@ -149,4 +161,3 @@ def resetTable(tableName):
     c.execute("DELETE FROM " + tableName)
     db.commit()
     db.close()
-
