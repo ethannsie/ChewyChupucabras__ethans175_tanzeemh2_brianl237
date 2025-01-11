@@ -165,15 +165,6 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     db.commit()
     db.close()
 
-#Updates a value in a table with a new value
-def getTableData(table, newValue, valueType, value):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    c.execute(f"UPDATE {table} GET {newValue} WHERE {valueType} = ?", (value,))
-    db.commit()
-    db.close()
-
-
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
