@@ -20,11 +20,15 @@ app = Flask(__name__)
 app.secret_key = os.urandom(32)
 active_sessions = {}
 
+#os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
     db.setup() # sets up databases
     APIs.fetch_poke()
     APIs.fetch_moves()
-    print(db.getTable("pokeDex"))
+    APIs.fetch_type()
+
+
+#print(db.getTable("types"))
 
 
 @app.route("/", methods=['GET', 'POST'])

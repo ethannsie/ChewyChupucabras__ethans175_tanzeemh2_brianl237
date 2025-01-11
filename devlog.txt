@@ -42,7 +42,7 @@ tanzeemH -- 2025-01-08 02:50
 ethanS -- 2025-01-08 15:46
 - Updated design doc
 - Adjusted database to avoid redundency (new table: gamePokeStats, derived from gamePokeSets with new move parameters)
-- Adjusted old diagram with dbdiagram.io 
+- Adjusted old diagram with dbdiagram.io
 - Added accessibility comments on each route (semi-accessibility, must log in, doesn't need log in)
 - Added more description on routes (answered questions written down)
 
@@ -52,7 +52,7 @@ brianL -- 2025-01-09 8:06
 - renamed a column in gameChallenge table to prevent a syntax error
 - added placeholder functions in game.py that could be used later
 - added a function in game.py that calculates damage
-- Note: may need to implement HP scaling based on level 
+- Note: may need to implement HP scaling based on level
 
 brianL -- 2025-01-09 8:58
 - added db function to update tables
@@ -64,3 +64,13 @@ ethanS -- 2025-01-10 10:56
 - Continued working on challenging
 - Successfully finished creating the challenge and updating db functions
 - Still need to finish accepting a challenge and rerouting to game.html
+
+brianL -- 2025-01-11 00:56
+- added table to db that stores all type matchups
+- updated API.py to get type matchups from pokeAPI
+- updated damageCalc in game.py to include pokemon type matchups in damage
+- added requests to requirements.txt (apparently it isnt included in python)
+
+brianL -- 2025-01-11 2:08
+- added db function that selects all specified argument based database
+- implemented elo system (details subject to change)
