@@ -79,8 +79,8 @@ def fetch_type():
                 if type_details:
                     type_matchup_list = []
                     for matchup in type_details['damage_relations']:
-                        matchups = []
+                        matchups = ""
                         for type in type_details['damage_relations'][matchup]:
-                            matchups.append(type['name'])
+                            matchups += type['name'] + " "
                         type_matchup_list.append(matchups)
-                db.updateTypes(type_name, type_matchup_list[0], type_matchup_list[1], type_matchup_list[2], type_matchup_list[3], type_matchup_list[4],type_matchup_list[5])
+                    db.updateTypes(type_name, type_matchup_list[0], type_matchup_list[1], type_matchup_list[2], type_matchup_list[3], type_matchup_list[4],type_matchup_list[5])

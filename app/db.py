@@ -20,7 +20,7 @@ def setup():
     c.execute("CREATE TABLE IF NOT EXISTS moves (id INTEGER PRIMARY KEY, name TEXT, type TEXT, power INTEGER, accuracy INTEGER, pp INTEGER, class_type TEXT);")
     c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
     # Database holds all of the pokemon types with their type matchups
-    c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_from TEXT [], no_dmg_to TEXT []);")
+    c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, double_dmg_from TEXT, double_dmg_to TEXT, half_dmg_from TEXT, half_dmg_to TEXT, no_dmg_from TEXT, no_dmg_to TEXT);")
 
 
     # Database to track what games are being challenged
@@ -30,7 +30,7 @@ def setup():
     # Database keeps track of all six collection of pokemons from each game
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game
-    c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER PRIMARY KEY, poke_name TEXT, active_hp REAL, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER, user TEXT, poke_name TEXT, active_hp REAL, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT);")
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
     c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
@@ -68,11 +68,25 @@ def getUserID(username):
         return result[0]
     else:
         return -1
+    
+def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO pokeDex (poke_name, type_1, type_2, HP, ATK, DEF, SpATK, SpDEF, SpE, sprite_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url))
+    db.commit()
+    db.close()
 
 def updateMoves(move_id, name, move_type, power, accuracy, pp, class_type):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO moves (id, name, type, power, accuracy, pp, class_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (move_id, name, move_type, power, accuracy, pp, class_type))
+    db.commit()
+    db.close()
+
+def updateTypes(type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom,nodmgto):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO types (type, double_dmg_from, double_dmg_to, half_dmg_from, half_dmg_to, no_dmg_from, no_dmg_to) VALUES (?, ?, ?, ?, ?, ?, ?)", (type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom, nodmgto))
     db.commit()
     db.close()
 
@@ -83,29 +97,22 @@ def updatePokeMove(pokemon_name, move_id):
     db.commit()
     db.close()
 
-def updateTypes(type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom,nodmgto):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    c.execute("INSERT INTO types (type TEXT, double_dmg_from TEXT [], double_dmg_to TEXT [], half_dmg_from TEXT [], half_dmg_to TEXT [], no_dmg_from TEXT [], no_dmg_to TEXT []) VALUES (?, ?, ?, ?, ?, ?, ?)", (type, doubledmgfrom, doubledmgto, halfdmgfrom, halfdmgto, nodmgfrom, nodmgto))
-    db.commit()
-    db.close()
-
 def updateGameHistory(game_number, winner, loser, current_time):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    winnerID = getUserID(winner)
-    loserID = getUserID(loser)
-    c.execute("INSERT INTO gameHistory (game_ID, winner, loser, time_completed) VALUES (?, ?, ?, ?)", (game_number, winnerID, loserID, current_time))
+    #winnerID = getUserID(winner)
+    #loserID = getUserID(loser)
+    c.execute("INSERT INTO gameHistory (game_ID, winner, loser, time_completed) VALUES (?, ?, ?, ?)", (game_number, winner, loser, current_time))
     db.commit()
     db.close()
 
-def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url):
+def updateGamePokeList(game_ID, user, poke_name, active_hp, move1, move2, move3, move4):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO pokeDex (poke_name, type_1, type_2, HP, ATK, DEF, SpATK, SpDEF, SpE, sprite_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url))
+    c.execute("INSERT INTO gamePokeStats (game_ID, user, poke_name, active_hp, poke1, poke2, poke3, poke4) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", (game_ID, user, poke_name, active_hp, move1, move2, move3, move4))
     db.commit()
     db.close()
-
+    
 # Database Manipulation
 
 #Selecting specific argument-based data
@@ -121,6 +128,21 @@ def getTableData(table, valueType, value):
         return result
     else:
         return -1
+    
+#Selecting specific argument-based data -- same as getTableData except gets all rows instead of only one
+def getAllTableData(table, valueType, value):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    # make sure that this all exists
+    c.execute("SELECT * FROM " + table + " WHERE " + valueType + " = ?", (value,))
+    result = c.fetchall()
+    db.close()
+    # check in case there is an error in fetching data
+    if result:
+        return result
+    else:
+        return -1
+     
 #Updates a value in a table with a new value
 def setTableData(table, updateValueType, newValue, valueType, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

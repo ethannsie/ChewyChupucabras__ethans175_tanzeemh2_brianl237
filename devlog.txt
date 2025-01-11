@@ -56,3 +56,13 @@ brianL -- 2025-01-09 8:06
 
 brianL -- 2025-01-09 8:58
 - added db function to update tables
+
+brianL -- 2025-01-11 00:56
+- added table to db that stores all type matchups
+- updated API.py to get type matchups from pokeAPI
+- updated damageCalc in game.py to include pokemon type matchups in damage
+- added requests to requirements.txt (apparently it isnt included in python)
+
+brianL -- 2025-01-11 2:08
+- added db function that selects all specified argument based database
+- implemented elo system (details subject to change)
