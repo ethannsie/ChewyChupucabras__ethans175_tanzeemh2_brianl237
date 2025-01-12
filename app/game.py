@@ -7,14 +7,39 @@
 import db
 import random
 
-def startgame():
+#recieves username of players (could be changed to challengeID); gives them 6 random pokemon with 4 random moves
+def startgame(player1, player2):
+    id = 1 if db.getLatestGameHistory() == -1 else db.getLatestGameHistory()[0] + 1
+    for player in [player1, player2]:
+        #slightly messy but gets a random move_id from pokemon_moves table four times for each of the six pokemon. data is then stored in gamePokeStats
+        #possible issue is that there are duplicate moves/pokemon selected
+        randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
+        move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        db.updateGamePokeList(id, player, randomPoke, db.getTableData("pokeDex", "poke_name", randomPoke)[4], "True", move1_ID, move2_ID, move3_ID, move4_ID)
+
+        for i in range(5): 
+            randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
+            move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            
+            db.updateGamePokeList(id, player, randomPoke, db.getTableData("pokeDex", "poke_name", randomPoke)[4], "False", move1_ID, move2_ID, move3_ID, move4_ID)
+
+#js needs the toggle corresponding active_statuses in gamePokeStats 
+def swapPokemon(swapPokeName):
+    #for loop searches for gamePokeStats rows with a certain gameID and username until it finds the pokemon with active_status set to True
+    #once found, toggles it to False and switchs the corresponding row with swapPokeName to True
     return
 
 def turn():
     return
 
 def battletext():
-    return
+    return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
 
 #recieves name of move used, name of attacking pokemon, name of recieving pokemon; returns dmg
 def damageCalc(move, attacker, reciever):
@@ -49,6 +74,7 @@ def damageCalc(move, attacker, reciever):
 
     return (((((((2.0 * pokeLevel * crtical) / 5) + 2) * movePower * attackerATK / recieverDEF) / 50) + 2) * stab * typeMultipler * rng)
 
+#recieves id of the game; updates players' elo based on winner/loser
 def updateElo(gameID):
     winner_user = db.getTableData("gameHistory", "game_ID", gameID)[1]
     loser_user = db.getTableData("gameHistory", "game_ID", gameID)[2]
@@ -65,3 +91,4 @@ def updateElo(gameID):
 
     db.setTableData("users", "rank", winner_elo, "username", winner_user)
     db.setTableData("users", "rank", loser_elo, "username", loser_user)
+
