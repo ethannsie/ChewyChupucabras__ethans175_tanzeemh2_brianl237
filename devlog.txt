@@ -94,3 +94,6 @@ ethanS -- 2025-01-13 12:15
 - Needs to work out the kinks with updating database when close tab
 - This could be a mech that compares active_challenges vs accepted ones when you're on the ('/')
 
+ethanS -- 2025-01-13 15:09
+- Created a basic design for all functionality on the game.html
+- Actual button functions still need to be implemented as well as the turn-based system
