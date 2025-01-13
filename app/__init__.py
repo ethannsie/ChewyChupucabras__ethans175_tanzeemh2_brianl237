@@ -37,9 +37,6 @@ def home():
     if 'username' in session:
         challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         updateChallenges = []
-        for count, challenge in enumerate(challenges):
-            if challenge[3] == None:
-                updateChallenges.append(challenge)
         passUsers = {}
         print(challenges)
         for user in active_sessions:
@@ -47,6 +44,9 @@ def home():
                 passUsers[user] = db.getUserID(session['username'])
         if challenges == -1:
             return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers)
+        for count, challenge in enumerate(challenges):
+            if challenge[3] == None:
+                updateChallenges.append(challenge)
         return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges)
     return render_template("home.html", logged_in = passValue)
 
