@@ -34,13 +34,16 @@ if (not os.path.isfile("chupaPokemon.db")):
 @app.route("/", methods=['GET', 'POST'])
 def home():
     passValue = 'username' in session
-    print(db.getTable("users"))
     if 'username' in session:
+        challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         passUsers = {}
+        print(challenges)
         for user in active_sessions:
             if user != session['username']:
                 passUsers[user] = db.getUserID(session['username'])
-        return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers)
+        if challenges == -1:
+            return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers)
+        return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=challenges)
     return render_template("home.html", logged_in = passValue)
 
 @app.route('/register', methods=['GET','POST'])
@@ -124,15 +127,16 @@ def challenge():
 
 @app.route("/accept_your_fate", methods=['GET', 'POST'])
 def accept_your_fate():
-    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+    print("please work")
+    if db.getTableData("gameChallenge", "accepted_status", "challenger", session['username']) != None and db.getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
         db.updateChallengeFinal("Yes", request.form['username'], session['username'])
-    return redirect('/')
+    return redirect('/game')
 
-@app.route("/reject_your_fate", methods=['GET', 'POST'])
-def reject_your_fate():
-    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
-        db.updateChallengeFinal("No", request.form['username'], session['username'])
-    return redirect('/')
+# @app.route("/reject_your_fate", methods=['GET', 'POST'])
+# def reject_your_fate():
+#     if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+#         db.updateChallengeFinal("No", request.form['username'], session['username'])
+#     return redirect('/')
 
 if __name__ == '__main__':
     app.debug = True

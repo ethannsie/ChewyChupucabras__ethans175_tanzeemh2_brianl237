@@ -177,7 +177,7 @@ def getGameHistory(userID):
         return result
     else:
         return -1
-    
+
 #Select latest game played based on ID
 def getLatestGameHistory():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -190,7 +190,7 @@ def getLatestGameHistory():
         return result
     else:
         return -1
-    
+
 #Returning all data in any table
 def getTable(tableName):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
