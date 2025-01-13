@@ -122,16 +122,22 @@ def history():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
-    return render_template("game.html")
+    if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
+        return render_template("game.html")
+    return redirect('/')
 
 @app.route("/challenge", methods=['GET', 'POST'])
 def challenge():
-    db.updateChallengeInitial(session['username'], request.form['username'])
+    if 'username' in session:
+        try:
+            db.updateChallengeInitial(session['username'], request.form['username'])
+        except:
+            flash("You need to challenge users through the menu", 'error')
     return redirect('/')
 
 @app.route("/accept_your_fate", methods=['GET', 'POST'])
 def accept_your_fate():
-    if 'username' in session:
+    if 'username' in session and request.form != None:
         if db.getChallengeData("None", "challenged", session['username']) == None and db.getChallengeData("None", "challenger", request.form['username']) == None:
             print("please work")
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
