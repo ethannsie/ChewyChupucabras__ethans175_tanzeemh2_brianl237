@@ -84,3 +84,7 @@ brianL -- 2025-01-11 22:06
 brianL -- 2025-01-13 9:10
 - added game function that allows players to swap pokemon
 - added helper function that gets current active pokemon (may delete later cuz not sure if its needed for anything)
+
+ethanS -- 2025-01-13 10:59
+- Worked on finishing accept match
+- Need to fix method of updating database, but otherwise almost done
