@@ -12,7 +12,12 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Chupamon Showdown</title>
       <script src="https://cdn.tailwindcss.com"></script>
-      <script type = "text/javascript" src="../static/js/functions.js"></script>
+      <script>
+         function toggleHidden(id) {
+             const toggle = document.getElementById(id);
+             toggle.classList.toggle('hidden');
+         }
+      </script>
    </head>
    <body class="bg-gray-900 text-white min-h-screen flex flex-col">
       <!-- Header -->
@@ -33,16 +38,6 @@
          <div class="text-center">
             <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
          </div>
-         <input type="text" id="searchBar" placeholder="Search based on chupaID or by name" class="text-black resize-x">
-<!-- To do:
-Allow the bar to take in input
-Receive the input as a search request, see if ID or name is in database
-Return only the letter match
-Maybe include something to search for stats?
-Show everyone with stats above a certain extent on the page
--->
-
-         <div id = "results" class="bg-gray-800 p-6 rounded shadow-lg w-96"></div>
          <!-- Pokémon Grid -->
          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for pokemon in pokemon_data %}
