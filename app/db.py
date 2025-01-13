@@ -165,7 +165,6 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     db.commit()
     db.close()
 
-
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

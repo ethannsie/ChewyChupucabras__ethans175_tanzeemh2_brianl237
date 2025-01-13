@@ -47,7 +47,7 @@ def getCurrActivePokemon(game_id, username):
 def endGame():
     return
 
-#my idea of how this would work:
+#my idea of how this could work:
 #recieves gameId and action of first player (idk how this will be implemented) and action of second player (maybe by move name? or "swap" if swapping)
 #uses function to get active pokemon speed to determine who moves first
 #calls swapPokemon if user needs to swap
