@@ -74,3 +74,11 @@ brianL -- 2025-01-11 00:56
 brianL -- 2025-01-11 2:08
 - added db function that selects all specified argument based database
 - implemented elo system (details subject to change)
+
+brianL -- 2025-01-11 10:30
+- added game function that sets up the game by assigning 6 random pokemon with 4 moves to each player
+- updated gamePokeStats to keep track of the pokemon's active status for swapping
+
+brianL -- 2025-01-13 9:10
+- added game function that allows players to swap pokemon
+- added helper function that gets current active pokemon (may delete later cuz not sure if its needed for anything)
