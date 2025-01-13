@@ -88,3 +88,9 @@ brianL -- 2025-01-13 9:10
 ethanS -- 2025-01-13 10:59
 - Worked on finishing accept match
 - Need to fix method of updating database, but otherwise almost done
+
+ethanS -- 2025-01-13 12:15
+- Working accept match mechanism
+- Needs to work out the kinks with updating database when close tab
+- This could be a mech that compares active_challenges vs accepted ones when you're on the ('/')
+
