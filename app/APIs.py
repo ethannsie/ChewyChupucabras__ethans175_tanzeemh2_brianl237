@@ -35,9 +35,10 @@ def fetch_moves():
                 accuracy = move_details['accuracy'] if move_details['accuracy'] else None
                 pp = move_details['pp']
                 class_type = move_details['damage_class']['name'] if move_details['damage_class']['name'] else None
+                print(move)
                 # Insert move into the database
                 db.updateMoves(move_id, name, move_type, power, accuracy, pp, class_type)
-
+                print(move_id)
                 # Fetch Pokémon that can learn the move
                 for learn_method in move_details['learned_by_pokemon']:
                     pokemon_name = learn_method['name']
@@ -66,3 +67,20 @@ def fetch_poke():
                 sprite_url = pokemon_details['sprites']['front_default']
                 # Insert Pokémon into the database
                 db.updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url)
+
+def fetch_type():
+        pokemon_url = "https://pokeapi.co/api/v2/type/"
+        type_data = fetch_data(pokemon_url)
+
+        if type_data:
+            for type in type_data['results']:
+                type_name = type['name']
+                type_details = fetch_data(type['url'])
+                if type_details:
+                    type_matchup_list = []
+                    for matchup in type_details['damage_relations']:
+                        matchups = ""
+                        for type in type_details['damage_relations'][matchup]:
+                            matchups += type['name'] + " "
+                        type_matchup_list.append(matchups)
+                    db.updateTypes(type_name, type_matchup_list[0], type_matchup_list[1], type_matchup_list[2], type_matchup_list[3], type_matchup_list[4],type_matchup_list[5])

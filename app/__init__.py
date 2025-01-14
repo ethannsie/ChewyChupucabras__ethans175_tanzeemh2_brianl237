@@ -20,11 +20,15 @@ app = Flask(__name__)
 app.secret_key = os.urandom(32)
 active_sessions = {}
 
+#os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
     db.setup() # sets up databases
     APIs.fetch_poke()
     APIs.fetch_moves()
-    print(db.getTable("pokeDex"))
+    APIs.fetch_type()
+
+
+#print(db.getTable("types"))
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -74,7 +78,7 @@ def login():
         flash("Incorrect username or password.", 'error')
     return redirect("/")
 
-@app.route("/logout")
+@app.route("/logout", methods=['GET', 'POST'])
 def logout():
     if 'username' in session:
         flash("Logged out", 'success')
@@ -82,7 +86,7 @@ def logout():
         session.pop('username', None)
     return redirect("/")
 
-@app.route("/chupadex")
+@app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
     search_query = request.args.get('search')
     stat = request.args.get('stat')
@@ -112,7 +116,7 @@ def chupadex():
         search = 1
     return render_template("chupadex.html", pokemon_data=pokemon_data, search=search)
 
-@app.route("/ladder")
+@app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
     data = db.getTable("users")
     userData = []
@@ -121,9 +125,7 @@ def ladder():
         if [user[0], user[1], user[3]] not in userData:
             userData.append([user[0], user[1], user[3]])
             rankData.append(user[3])
-    print(rankData)
     rankData.sort(reverse=True)
-    print(rankData)
     passData = []
     for rank in rankData:
         for count, user in enumerate(userData):
@@ -133,13 +135,30 @@ def ladder():
 
     return render_template("ladder.html", user_data=passData)
 
-@app.route("/history")
+@app.route("/history", methods=['GET', 'POST'])
 def history():
     return render_template("history.html")
 
-@app.route("/game")
+@app.route("/game", methods=['GET', 'POST'])
 def game():
     return render_template("game.html")
+
+@app.route("/challenge", methods=['GET', 'POST'])
+def challenge():
+    db.updateChallengeInitial(session['username'], request.form['username'])
+    return redirect('/')
+
+@app.route("/accept_your_fate", methods=['GET', 'POST'])
+def accept_your_fate():
+    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+        db.updateChallengeFinal("Yes", request.form['username'], session['username'])
+    return redirect('/')
+
+@app.route("/reject_your_fate", methods=['GET', 'POST'])
+def reject_your_fate():
+    if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:
+        db.updateChallengeFinal("No", request.form['username'], session['username'])
+    return redirect('/')
 
 if __name__ == '__main__':
     app.debug = True
