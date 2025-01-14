@@ -34,6 +34,7 @@ def setup():
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
     c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
+    c.execute("CREATE TABLE IF NOT EXISTS battlelog (first_id INTEGER, second_id INTEGER, firstAction TEXT, secondAction TEXT);")
     db.commit()
     db.close()
 
