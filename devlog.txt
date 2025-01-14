@@ -103,3 +103,6 @@ ethanS -- 2025-01-13 15:34
 
 ethanS -- 2025-01-13 18:35
 - Additional navbar button
+
+ethanS -- 2025-01-13 21:19
+- Coded a light/dark mode switch in the html settings
