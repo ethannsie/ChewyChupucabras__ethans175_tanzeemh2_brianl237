@@ -33,7 +33,7 @@
          <div class="text-center">
             <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
          </div>
-         <input type="text" id="searchBar" placeholder="Search based on chupaID or by name" class="text-black resize-x">
+         
 <!-- To do:
 Allow the bar to take in input
 Receive the input as a search request, see if ID or name is in database
@@ -41,25 +41,72 @@ Return only the letter match
 Maybe include something to search for stats?
 Show everyone with stats above a certain extent on the page
 -->
+         <form method="get" action="{{ url_for('chupadex') }}" class="text-center mb-6">
+            <input type="text" name="search" id="searchBar" placeholder="Search by ChupaID or Name" class="text-black p-2 rounded">
+            <br>
 
-         <div id = "results" class="bg-gray-800 p-6 rounded shadow-lg w-96"></div>
+            <select name="stat" class="text-black p-2 rounded">
+               <option value="">--Select Stat--</option>
+               <option value="HP">HP</option>
+               <option value="ATK">Attack</option>
+               <option value="DEF">Defense</option>
+               <option value="SpATK">Special Attack</option>
+               <option value="SpDEF">Special Defense</option>
+               <option value="SpE">Speed</option>
+            </select>
+            
+            <select name="operator" class="text-black p-2 rounded">
+               <option value="">--Select Operator--</option>
+               <option value=">">Above</option>
+               <option value="<">Below</option>
+               <option value=">=">Above or Equal</option>
+               <option value="<=">Below or Equal</option>
+            </select>
+
+            <input type="number" name="value" placeholder="Enter Value" class="text-black p-2 rounded">
+            <br>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Search</button>
+         </form>
          <!-- Pokémon Grid -->
          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {% for pokemon in pokemon_data %}
-            <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
-               <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
-               <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
-               <p class="text-sm text-gray-400">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
-               <div class="mt-4 text-gray-400 text-sm">
-                  <p>HP: {{ pokemon[4] }}</p>
-                  <p>ATK: {{ pokemon[5] }}</p>
-                  <p>DEF: {{ pokemon[6] }}</p>
-                  <p>SpATK: {{ pokemon[7] }}</p>
-                  <p>SpDEF: {{ pokemon[8] }}</p>
-                  <p>Speed: {{ pokemon[9] }}</p>
+            {% if search == 1 %}
+               {% for pokemon in pokemon_data %}
+               <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+                  <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
+                  <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
+                  <p class="text-sm text-gray-400">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
+                  <div class="mt-4 text-gray-400 text-sm">
+                     <p>HP: {{ pokemon[4] }}</p>
+                     <p>ATK: {{ pokemon[5] }}</p>
+                     <p>DEF: {{ pokemon[6] }}</p>
+                     <p>SpATK: {{ pokemon[7] }}</p>
+                     <p>SpDEF: {{ pokemon[8] }}</p>
+                     <p>Speed: {{ pokemon[9] }}</p>
+                  </div>
                </div>
-            </div>
-            {% endfor %}
+               {% endfor %}
+            {% else %}
+               <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+                  <img src="{{ pokemon_data[10] }}" alt="{{ pokemon_data[1] }}" class="mx-auto w-24 h-24">
+                  <h3 class="text-xl font-bold mt-2">
+                     {% if pokemon_data[1] is string %}
+                        {{ "Chupa" + pokemon_data[1][(pokemon_data[1]|length)//2-2:]}}
+                     {% else %}
+                        {{"Chupa" + pokemon_data[1] | string}}
+                     {% endif %}
+                  </h3>
+                  <p class="text-sm text-gray-400">Type: {{ pokemon_data[2] | capitalize }}{% if pokemon_data[3] %} / {{ pokemon_data[3] | capitalize }}{% endif %}</p>
+                  <div class="mt-4 text-gray-400 text-sm">
+                     <p>HP: {{ pokemon_data[4] }}</p>
+                     <p>ATK: {{ pokemon_data[5] }}</p>
+                     <p>DEF: {{ pokemon_data[6] }}</p>
+                     <p>SpATK: {{ pokemon_data[7] }}</p>
+                     <p>SpDEF: {{ pokemon_data[8] }}</p>
+                     <p>Speed: {{ pokemon_data[9] }}</p>
+                  </div>
+               </div>
+            {% endif %}
+
          </div>
       </main>
       <!-- Account Settings  -->

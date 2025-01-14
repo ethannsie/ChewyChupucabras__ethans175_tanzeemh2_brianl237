@@ -4,8 +4,3 @@ var toggleHidden = function(id) {
   const toggle = document.getElementById(id);
   toggle.classList.toggle('hidden');
 }
-var newResult = function(n) {
-  var input = document.getElementById("searchBar").value;
-  if (input.)
-
-}

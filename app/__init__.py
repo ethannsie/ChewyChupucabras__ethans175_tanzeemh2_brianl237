@@ -84,7 +84,33 @@ def logout():
 
 @app.route("/chupadex")
 def chupadex():
-    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"))
+    search_query = request.args.get('search')
+    stat = request.args.get('stat')
+    operator = request.args.get('operator')
+    value = request.args.get('value')
+
+    pokemon_data = None
+    search = 1
+    if search_query:
+        # Check if the search query is numeric (search by ID) or alphabetic (search by name)
+        if search_query.isdigit():
+            result = db.getTableData("pokeDex", "poke_ID", search_query)
+            if result != -1:
+                pokemon_data = result
+            search = 2
+        else:
+            result = db.getPokeData("pokeDex", "poke_name", search_query)
+            if result != -1:
+                pokemon_data = result
+            search = 2
+    elif stat and operator and value:
+        if stat in ["HP", "ATK", "DEF", "SpATK", "SpDEF", "SpE"] and operator in [">", "<", ">=", "<="]:
+            pokemon_data = db.getStatFilteredData("pokedex", stat, operator, value)
+    else:
+        # If no search query, display all Pokémon
+        pokemon_data = db.getTable("pokeDex")  # This will select all rows
+        search = 1
+    return render_template("chupadex.html", pokemon_data=pokemon_data, search=search)
 
 @app.route("/ladder")
 def ladder():
