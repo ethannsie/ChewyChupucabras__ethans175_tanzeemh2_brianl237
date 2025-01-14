@@ -5,68 +5,117 @@
    2024-01-XX
    Time Spent: not enough hours
    -->
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Chupamon Showdown</title>
-      <script src="https://cdn.tailwindcss.com"></script>
-      <script>
-         function toggleHidden(id) {
-             const toggle = document.getElementById(id);
-             toggle.classList.toggle('hidden');
-         }
-      </script>
-   </head>
-   <body class="bg-gray-900 text-white min-h-screen flex flex-col">
-      <!-- Header -->
-      <header class="bg-gray-800 p-4 shadow-md">
-         <div class="container mx-auto flex items-center justify-between">
-            <h1 class="text-xl font-bold">Chupamon Showdown</h1>
-            <nav>
-               <a href="/" class="text-gray-300 hover:text-white px-4">Home</a>
-               <a href="/ladder" class="text-gray-300 hover:text-white px-4">Ladder</a>
-               <a href="/history" class="text-gray-300 hover:text-white px-4">Match History</a>
-               <a href="/chupadex" class="text-gray-300 hover:text-white px-4">ChupaDex</a>
-               <button onclick="toggleHidden('settings')" class="text-gray-300 hover:text-white px-4">Account Settings</button>
-            </nav>
-         </div>
-      </header>
-      <!-- Main Content -->
-      <main class="flex-grow container mx-auto p-8">
-         <div class="text-center">
-            <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the Chupamon Ladder!</h2>
-         </div>
-         <table class="w-full table-auto border-collapse border border-gray-200">
-            <thead class="bg-blue-500 text-white">
-               <tr>
-                  <th class="px-4 py-2 border border-gray-300">Rank</th>
-                  <th class="px-4 py-2 border border-gray-300">Username</th>
-               </tr>
-            </thead>
-            <tbody id="ranking-body" class="text-gray-700">
-               {% for user in user_data %}
-               <tr class="odd:bg-gray-50 even:bg-gray-100">
-                  <td class="px-4 py-2 text-center border border-gray-300"> {{user[2]}}</td>
-                  <td class="px-4 py-2 text-center border border-gray-300">{{user[1]}}</td>
-               </tr>
-               {% endfor %}
-            </tbody>
-         </table>
-      </main>
-      <!-- Account Settings  -->
-      <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
-         <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
-            <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
-            <div class="flex justify-between items-center">
-               <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
+   <!DOCTYPE html>
+   <html lang="en">
+      <head>
+         <meta charset="UTF-8">
+         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+         <title>Chupamon Showdown</title>
+         <script src="https://cdn.tailwindcss.com"></script>
+         <script>
+            function toggleHidden(id) {
+                const toggle = document.getElementById(id);
+                toggle.classList.toggle('hidden');
+            }
+         </script>
+      </head>
+      {% if mode %}
+      <body class="bg-white text-black min-h-screen flex flex-col">
+         {% else %}
+         <body class="bg-gray-900 text-white min-h-screen flex flex-col">
+            {% endif %}
+            <!-- Header -->
+            {% if mode %}
+            <header class="bg-gray-300 p-4 shadow-md">
+               <div class="container mx-auto flex items-center justify-between">
+                  <h1 class="text-xl font-bold"><a href="/"> Chupamon Showdown </a> </h1>
+                  <nav>
+                     <a href="/" class="text-gray-700 hover:text-black px-4">Home</a>
+                     <a href="/ladder" class="text-gray-700 hover:text-black px-4">Ladder</a>
+                     <a href="/history" class="text-gray-700 hover:text-black px-4">Match History</a>
+                     <a href="/chupadex" class="text-gray-700 hover:text-black px-4">ChupaDex</a>
+                     <button onclick="toggleHidden('settings')" class="text-gray-700 hover:text-black px-4">Account Settings</button>
+                  </nav>
+               </div>
+            </header>
+            {% else %}
+            <header class="bg-gray-800 p-4 shadow-md">
+               <div class="container mx-auto flex items-center justify-between">
+                  <h1 class="text-xl font-bold"><a href="/"> Chupamon Showdown </a> </h1>
+                  <nav>
+                     <a href="/" class="text-gray-300 hover:text-white px-4">Home</a>
+                     <a href="/ladder" class="text-gray-300 hover:text-white px-4">Ladder</a>
+                     <a href="/history" class="text-gray-300 hover:text-white px-4">Match History</a>
+                     <a href="/chupadex" class="text-gray-300 hover:text-white px-4">ChupaDex</a>
+                     <button onclick="toggleHidden('settings')" class="text-gray-300 hover:text-white px-4">Account Settings</button>
+                  </nav>
+               </div>
+            </header>
+            {% endif %}
+         <!-- Main Content -->
+         <main class="flex-grow container mx-auto p-8">
+            <div class="text-center">
+               <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the Chupamon Ladder!</h2>
+            </div>
+            <table class="w-full table-auto border-collapse border border-gray-200">
+               <thead class="bg-blue-500 text-white">
+                  <tr>
+                     <th class="px-4 py-2 border border-gray-300">Rank</th>
+                     <th class="px-4 py-2 border border-gray-300">Username</th>
+                  </tr>
+               </thead>
+               <tbody id="ranking-body" class="text-gray-700">
+                  {% for user in user_data %}
+                  <tr class="odd:bg-gray-50 even:bg-gray-100">
+                     <td class="px-4 py-2 text-center border border-gray-300"> {{user[2]}}</td>
+                     <td class="px-4 py-2 text-center border border-gray-300">{{user[1]}}</td>
+                  </tr>
+                  {% endfor %}
+               </tbody>
+            </table>
+         </main>
+         <!-- Account Settings  -->
+         {% if mode %}
+         <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+            <div class="bg-gray-300 p-6 rounded shadow-lg w-96">
+               <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+               {% if logged_in %}
+               <form action="/mode_swap" method="POST" class="space-y-4">
+                  <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+               </form>
+               {% else %}
+               <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+               {% endif %}
+               <div class="flex justify-between items-center">
+                  <button type="button" onclick="toggleHidden('settings')" class="text-gray-600 hover:text-black">Cancel</button>
+               </div>
             </div>
          </div>
-      </div>
-      <!-- Footer -->
-      <footer class="bg-gray-800 p-4 text-center">
-         <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
-      </footer>
-   </body>
-</html>
+         {% else %}
+         <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+            <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
+               <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+               {% if logged_in %}
+               <form action="/mode_swap" method="POST" class="space-y-4">
+                  <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+               </form>
+               {% else %}
+               <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+               {% endif %}
+               <div class="flex justify-between items-center">
+                  <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
+               </div>
+            </div>
+         </div>
+         {% endif %}
+         <!-- Footer -->
+         {% if mode %}
+         <footer class="bg-gray-300 p-4 text-center">
+         <p class="text-gray-700 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+         {% else %}
+         <footer class="bg-gray-800 p-4 text-center">
+            <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+            {% endif %}
+         </footer>
+      </body>
+   </html>
