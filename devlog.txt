@@ -106,3 +106,6 @@ ethanS -- 2025-01-13 18:35
 
 ethanS -- 2025-01-13 21:19
 - Coded a light/dark mode switch in the html settings
+
+ethanS -- 2025-01-13 21:33
+- Fixed html for game.html
