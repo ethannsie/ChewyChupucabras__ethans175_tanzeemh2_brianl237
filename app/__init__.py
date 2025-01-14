@@ -16,7 +16,8 @@ import json
 
 DB_FILE = "db.py"
 app = Flask(__name__)
-
+## False = Dark mode, True = Light Mode
+mode = False
 app.secret_key = os.urandom(32)
 active_sessions = {}
 
@@ -43,12 +44,12 @@ def home():
             if user != session['username']:
                 passUsers[user] = db.getUserID(session['username'])
         if challenges == -1:
-            return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers)
+            return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, mode = mode)
         for count, challenge in enumerate(challenges):
             if challenge[3] == None:
                 updateChallenges.append(challenge)
-        return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges)
-    return render_template("home.html", logged_in = passValue)
+        return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode)
+    return render_template("home.html", logged_in = passValue, mode = mode)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -95,7 +96,7 @@ def logout():
 
 @app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
-    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"))
+    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"), mode = mode)
 
 @app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
@@ -114,11 +115,11 @@ def ladder():
                 passData.append([user[0],user[1],user[2]])
                 userData.pop(count)
 
-    return render_template("ladder.html", user_data=passData)
+    return render_template("ladder.html", user_data = passData, mode = mode)
 
 @app.route("/history", methods=['GET', 'POST'])
 def history():
-    return render_template("history.html")
+    return render_template("history.html", mode = mode)
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
@@ -143,6 +144,13 @@ def accept_your_fate():
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
             return redirect('/game')
     return redirect('/')
+
+@app.route("/mode_swap", methods=['GET', 'POST'])
+def mode_swap():
+    global mode
+    mode = not mode
+    return redirect('/')
+
 # @app.route("/reject_your_fate", methods=['GET', 'POST'])
 # def reject_your_fate():
 #     if getTableData("gameChallenge", "accepted_status", "challenger", session['user']) != None and getTableData("gameChallenge", "accepted_status", "challenged", request.form['user']) != None:

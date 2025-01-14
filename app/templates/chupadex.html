@@ -19,20 +19,39 @@
          }
       </script>
    </head>
-   <body class="bg-gray-900 text-white min-h-screen flex flex-col">
-      <!-- Header -->
-      <header class="bg-gray-800 p-4 shadow-md">
-         <div class="container mx-auto flex items-center justify-between">
-            <h1 class="text-xl font-bold"><a href="/"> Chupamon Showdown </a> </h1>
-            <nav>
-               <a href="/" class="text-gray-300 hover:text-white px-4">Home</a>
-               <a href="/ladder" class="text-gray-300 hover:text-white px-4">Ladder</a>
-               <a href="/history" class="text-gray-300 hover:text-white px-4">Match History</a>
-               <a href="/chupadex" class="text-gray-300 hover:text-white px-4">ChupaDex</a>
-               <button onclick="toggleHidden('settings')" class="text-gray-300 hover:text-white px-4">Account Settings</button>
-            </nav>
-         </div>
-      </header>
+   {% if mode %}
+   <body class="bg-white text-black min-h-screen flex flex-col">
+      {% else %}
+      <body class="bg-gray-900 text-white min-h-screen flex flex-col">
+         {% endif %}
+         <!-- Header -->
+         {% if mode %}
+         <header class="bg-gray-300 p-4 shadow-md">
+            <div class="container mx-auto flex items-center justify-between">
+               <h1 class="text-xl font-bold"><a href="/"> Chupamon Showdown </a> </h1>
+               <nav>
+                  <a href="/" class="text-gray-700 hover:text-black px-4">Home</a>
+                  <a href="/ladder" class="text-gray-700 hover:text-black px-4">Ladder</a>
+                  <a href="/history" class="text-gray-700 hover:text-black px-4">Match History</a>
+                  <a href="/chupadex" class="text-gray-700 hover:text-black px-4">ChupaDex</a>
+                  <button onclick="toggleHidden('settings')" class="text-gray-700 hover:text-black px-4">Account Settings</button>
+               </nav>
+            </div>
+         </header>
+         {% else %}
+         <header class="bg-gray-800 p-4 shadow-md">
+            <div class="container mx-auto flex items-center justify-between">
+               <h1 class="text-xl font-bold"><a href="/"> Chupamon Showdown </a> </h1>
+               <nav>
+                  <a href="/" class="text-gray-300 hover:text-white px-4">Home</a>
+                  <a href="/ladder" class="text-gray-300 hover:text-white px-4">Ladder</a>
+                  <a href="/history" class="text-gray-300 hover:text-white px-4">Match History</a>
+                  <a href="/chupadex" class="text-gray-300 hover:text-white px-4">ChupaDex</a>
+                  <button onclick="toggleHidden('settings')" class="text-gray-300 hover:text-white px-4">Account Settings</button>
+               </nav>
+            </div>
+         </header>
+         {% endif %}
       <!-- Main Content -->
       <main class="flex-grow container mx-auto p-8">
          <div class="text-center">
@@ -41,9 +60,24 @@
          <!-- Pokémon Grid -->
          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% for pokemon in pokemon_data %}
+            {% if mode %}
+            <div class="bg-gray-300 p-4 rounded shadow-lg text-center">
+            {% else %}
             <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+            {% endif %}
                <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
                <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
+               {% if mode %}
+               <p class="text-sm text-gray-600">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
+               <div class="mt-4 text-gray-600 text-sm">
+                  <p>HP: {{ pokemon[4] }}</p>
+                  <p>ATK: {{ pokemon[5] }}</p>
+                  <p>DEF: {{ pokemon[6] }}</p>
+                  <p>SpATK: {{ pokemon[7] }}</p>
+                  <p>SpDEF: {{ pokemon[8] }}</p>
+                  <p>Speed: {{ pokemon[9] }}</p>
+               </div>
+               {% else %}
                <p class="text-sm text-gray-400">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
                <div class="mt-4 text-gray-400 text-sm">
                   <p>HP: {{ pokemon[4] }}</p>
@@ -53,22 +87,53 @@
                   <p>SpDEF: {{ pokemon[8] }}</p>
                   <p>Speed: {{ pokemon[9] }}</p>
                </div>
+               {% endif %}
             </div>
             {% endfor %}
          </div>
       </main>
       <!-- Account Settings  -->
+      {% if mode %}
+      <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+         <div class="bg-gray-300 p-6 rounded shadow-lg w-96">
+            <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+            {% if logged_in %}
+            <form action="/mode_swap" method="POST" class="space-y-4">
+               <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+            </form>
+            {% else %}
+            <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+            {% endif %}
+            <div class="flex justify-between items-center">
+               <button type="button" onclick="toggleHidden('settings')" class="text-gray-600 hover:text-black">Cancel</button>
+            </div>
+         </div>
+      </div>
+      {% else %}
       <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
          <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
             <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+            {% if logged_in %}
+            <form action="/mode_swap" method="POST" class="space-y-4">
+               <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+            </form>
+            {% else %}
+            <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+            {% endif %}
             <div class="flex justify-between items-center">
                <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
             </div>
          </div>
       </div>
+      {% endif %}
       <!-- Footer -->
+      {% if mode %}
+      <footer class="bg-gray-300 p-4 text-center">
+      <p class="text-gray-700 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+      {% else %}
       <footer class="bg-gray-800 p-4 text-center">
          <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+         {% endif %}
       </footer>
    </body>
 </html>
