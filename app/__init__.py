@@ -96,10 +96,12 @@ def logout():
 
 @app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
-    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"), mode = mode)
+    passValue = 'username' in session
+    return render_template("chupadex.html", pokemon_data=db.getTable("pokeDex"), mode = mode, logged_in = passValue)
 
 @app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
+    passValue = 'username' in session
     data = db.getTable("users")
     userData = []
     rankData = []
@@ -115,16 +117,17 @@ def ladder():
                 passData.append([user[0],user[1],user[2]])
                 userData.pop(count)
 
-    return render_template("ladder.html", user_data = passData, mode = mode)
+    return render_template("ladder.html", user_data = passData, mode = mode, logged_in = passValue)
 
 @app.route("/history", methods=['GET', 'POST'])
 def history():
-    return render_template("history.html", mode = mode)
+    passValue = 'username' in session
+    return render_template("history.html", mode = mode, logged_in = passValue)
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
     if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
-        return render_template("game.html")
+        return render_template("game.html", mode=mode)
     return redirect('/')
 
 @app.route("/challenge", methods=['GET', 'POST'])
