@@ -11,6 +11,8 @@ from datetime import datetime
 DB_FILE = "chupaPokemon.db"
 
 def setup():
+
+def setup():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, rank INTEGER, created_at TEXT, last_login TEXT);")
@@ -143,6 +145,19 @@ def getTableData(table, valueType, value):
     else:
         return -1
 
+def getPokeData(table, valueType, value):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    # make sure that this all exists
+    c.execute("SELECT * FROM " + table + " WHERE " + valueType + " LIKE ?", (value,))
+    result = c.fetchone()
+    db.close()
+    # check in case there is an error in fetching data
+    if result:
+        return result
+    else:
+        return -1
+
 def getChallengeData(accepted_status, challenger, challenged):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
@@ -163,6 +178,14 @@ def getAllTableData(table, valueType, value):
         return result
     else:
         return -1
+def getStatFilteredData(table, stat, operator, value):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    query = f"SELECT * FROM pokeDex WHERE {stat} {operator} ?"
+    c.execute(query, (value,))
+    pokemon_data = c.fetchall()
+    db.close()
+    return pokemon_data
 
 #Updates a value in a table with a new value
 def setTableData(table, updateValueType, newValue, valueType, value):
