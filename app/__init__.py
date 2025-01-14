@@ -123,7 +123,7 @@ def chupadex():
         # If no search query, display all Pokémon
         pokemon_data = db.getTable("pokeDex")  # This will select all rows
         search = 1
-    return render_template("chupadex.html", pokemon_data=pokemon_data, search=search, logged_in = passValue)
+    return render_template("chupadex.html", pokemon_data=pokemon_data, search=search, logged_in = passValue, mode=mode)
 
 @app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
