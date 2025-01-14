@@ -11,8 +11,6 @@ from datetime import datetime
 DB_FILE = "chupaPokemon.db"
 
 def setup():
-
-def setup():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, rank INTEGER, created_at TEXT, last_login TEXT);")
