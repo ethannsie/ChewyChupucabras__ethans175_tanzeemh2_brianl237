@@ -153,6 +153,9 @@ def history():
 @app.route("/game", methods=['GET', 'POST'])
 def game():
     if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
+
+        # todo: battlelog
+        # if attack, then print "Your poke_name used poke_move! It's "
         return render_template("game.html", mode=mode)
     return redirect('/')
 
