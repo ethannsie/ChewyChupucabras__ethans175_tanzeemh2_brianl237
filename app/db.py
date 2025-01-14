@@ -210,7 +210,7 @@ def getGameHistory(userID):
 def getLatestGameHistory():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID",)
+    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID DESC",)
     result = c.fetchone()
     db.close()
     # check in case there is an error in fetching data
@@ -218,6 +218,20 @@ def getLatestGameHistory():
         return result
     else:
         return -1
+#Select latest game challenge based on ID
+def getLatestChallenge():
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge ORDER BY challenge_ID DESC",)
+    result = c.fetchone()
+    db.close()
+    # check in case there is an error in fetching data
+    if result:
+        return result
+    else:
+        return -1
+
+
 
 #Returning all data in any table
 def getTable(tableName):

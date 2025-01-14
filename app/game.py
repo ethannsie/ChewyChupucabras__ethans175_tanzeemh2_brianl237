@@ -7,6 +7,7 @@
 import db
 import random
 
+
 #recieves username of players (could be changed to challengeID); gives them 6 random pokemon with 4 random moves
 def startgame(player1, player2):
     id = 1 if db.getLatestGameHistory() == -1 else db.getLatestGameHistory()[0] + 1
@@ -44,19 +45,12 @@ def getCurrActivePokemon(game_id, username):
         if pokemon[1] == username and pokemon[4] == "True":
             return pokemon[2]
 
+def getPokeSprite(pokeName):
+    return db.getTableData("pokedex", "poke_name", pokeName)[10]
+
 def endGame():
     return
 
-#my idea of how this could work:
-#recieves gameId and action of first player (idk how this will be implemented) and action of second player (maybe by move name? or "swap" if swapping)
-#uses function to get active pokemon speed to determine who moves first
-#calls swapPokemon if user needs to swap
-#calls calcDamage(move used, pokemon1, pokemon2)
-#checks if the reciveing pokemon is dead, if yes force swap
-#if no, calls calcDamage(move used, pokemon2, pokemon1)
-#checks if the reciveing pokemon is dead, if yes force swap
-#calls a function to check if all pokemon are alive; if no, end game and update gameHistory
-#repeat
 def turn():
     return
 

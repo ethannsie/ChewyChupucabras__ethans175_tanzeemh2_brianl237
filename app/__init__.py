@@ -29,8 +29,9 @@ if (not os.path.isfile("chupaPokemon.db")):
     APIs.fetch_type()
 
 
-#print(db.getTable("types"))
-
+print(game.damageCalc("earthquake", "diglett", "pikachu"))
+print(db.getTable("gameChallenge"))
+print(db.getLatestChallenge())
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -142,7 +143,6 @@ def ladder():
             if rank == user[2]:
                 passData.append([user[0],user[1],user[2]])
                 userData.pop(count)
-
     return render_template("ladder.html", user_data = passData, mode = mode, logged_in = passValue)
 
 @app.route("/history", methods=['GET', 'POST'])
@@ -152,8 +152,21 @@ def history():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
+    #POSSIBLE ISSUE: could break if user types in /game
     if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
-        return render_template("game.html", mode=mode)
+        p1_user = db.getLatestChallenge()[1]
+        p2_user = db.getLatestChallenge()[2]
+        game.startgame(p1_user, p2_user)
+
+        game_id = db.getLatestGameHistory()
+        p1_active = game.getCurrActivePokemon(game_id,p1_user)
+        p2_active = game.getCurrActivePokemon(game_id,p2_user)
+
+        p1_sprite = game.getPokeSprite(p1_active)
+        p2_sprite = game.getPokeSprite(p1_active)
+
+
+        return render_template("game.html", sprite1 = p1_sprite, sprite2 = p2_sprite)
     return redirect('/')
 
 @app.route("/challenge", methods=['GET', 'POST'])
