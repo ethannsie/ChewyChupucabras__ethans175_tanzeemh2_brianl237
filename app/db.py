@@ -155,7 +155,14 @@ def getPokeData(table, valueType, value):
         return result
     else:
         return -1
-        
+
+def getChallengeData(accepted_status, challenger, challenged):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge WHERE accepted_status = ? AND challenger = ? AND challenged = ?", (accepted_status, challenger, challenged))
+    db.commit()
+    db.close()
+    
 #Selecting specific argument-based data -- same as getTableData except gets all rows instead of only one
 def getAllTableData(table, valueType, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
