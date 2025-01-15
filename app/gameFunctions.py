@@ -39,7 +39,36 @@ def swapPokemon(game_id, username, swapPokeName):
         elif pokemon[1] == username and pokemon[4] == "False" and pokemon[2] == swapPokeName:
             db.setTableData("gamePokeStats", "active_status", "True", "poke_name", pokemon[2])
 
-def battletext():
+#helper function to get the name of the current active pokemon based on username and gameID -- may delete later cuz idk if this is really necessary
+def getCurrActivePokemon(game_id, username):
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "True":
+            return pokemon[2]
+
+def endGame():
+    return
+
+#my idea of how this could work:
+#recieves gameId and action of first player (idk how this will be implemented) and action of second player (maybe by move name? or "swap" if swapping)
+#uses function to get active pokemon speed to determine who moves first
+#calls swapPokemon if user needs to swap
+#calls calcDamage(move used, pokemon1, pokemon2)
+#checks if the reciveing pokemon is dead, if yes force swap
+#if no, calls calcDamage(move used, pokemon2, pokemon1)
+#checks if the reciveing pokemon is dead, if yes force swap
+#calls a function to check if all pokemon are alive; if no, end game and update gameHistory
+#repeat
+def turn():
+    return
+
+def battletext(firstID, firstAction, secondID, secondAction):
+    # calculate first speed, secondspeed outside of battletext
+    if firstAction == "swap":
+        # swap pokemon code, Brian has that
+    else:
+        # pokemon move code, Brian has that
+        db.getTableData()
+
     return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
 
 #recieves name of move used, name of attacking pokemon, name of recieving pokemon; returns dmg
@@ -113,7 +142,7 @@ def getAlivePokemon(game_id, username):
 def getActivePokemonMoves(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
-            return [db.getTableData("moves", "id", pokemon[5])[1], db.getTableData("moves", "id", pokemon[6])[1], db.getTableData("moves", "id", pokemon[7])[1], db.getTableData("moves", "id", pokemon[8])[1]]     
+            return [db.getTableData("moves", "id", pokemon[5])[1], db.getTableData("moves", "id", pokemon[6])[1], db.getTableData("moves", "id", pokemon[7])[1], db.getTableData("moves", "id", pokemon[8])[1]]
 def getPokeSprite(pokeName):
     return db.getTableData("pokedex", "poke_name", pokeName)[10]
 def getActivePokemonHP(game_id, username):
