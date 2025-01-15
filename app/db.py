@@ -281,6 +281,14 @@ def resetChallenge():
     db.commit()
     db.close()
 
+def resetUsers(username1, username2):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("UPDATE users SET in_game = ? WHERE username = ?", ("No",username1))
+    c.execute("UPDATE users SET in_game = ? WHERE username = ?", ("No",username2))
+    db.commit()
+    db.close()
+
 #Resetting any table
 def resetTable(tableName):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

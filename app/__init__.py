@@ -213,6 +213,7 @@ def game():
                 if request.form.get('form_type') == "surrender":
                     db.updateGameHistory(game_id, p1_user, p2_user, "idk")
                     gameFunctions.updateElo(game_id)
+                    db.resetUsers(p1_user, p2_user)
                     return redirect('/')
                 #Swapping Pokemon
                 if request.form.get('form_type') == "swap":
