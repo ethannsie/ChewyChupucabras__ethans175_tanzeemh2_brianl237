@@ -233,7 +233,7 @@ def game():
 
 @app.route("/challenge", methods=['GET', 'POST'])
 def challenge():
-    if 'username' in session:
+    if 'username' in session and session['username'] != request.form['username']:
         db.updateChallengeInitial(session['username'], request.form['username'])
         if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
             db.deleteChallenge(session['username'], request.form['username'])
