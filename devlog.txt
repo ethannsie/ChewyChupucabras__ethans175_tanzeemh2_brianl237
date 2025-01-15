@@ -109,3 +109,8 @@ ethanS -- 2025-01-13 21:19
 
 ethanS -- 2025-01-13 21:33
 - Fixed html for game.html
+
+brianL -- 2025-01-14 23:54
+- renamed game.py to gameFunctions.py
+- updated gameFunctions.py with some helper functions
+- updated init and game.html to implement some of the game mechanics
