@@ -10,7 +10,7 @@ import sqlite3
 import sys
 from flask import Flask, render_template, request, session, redirect, url_for, flash
 import db
-import game
+import gameFunctions
 import APIs
 import json
 
@@ -21,17 +21,13 @@ mode = False
 app.secret_key = os.urandom(32)
 active_sessions = {}
 
+
 #os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
     db.setup() # sets up databases
     APIs.fetch_poke()
     APIs.fetch_moves()
     APIs.fetch_type()
-
-
-print(game.damageCalc("earthquake", "diglett", "pikachu"))
-print(db.getTable("gameChallenge"))
-print(db.getLatestChallenge())
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
@@ -152,21 +148,65 @@ def history():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
-    #POSSIBLE ISSUE: could break if user types in /game
+    #ISSUE: moves that dont do dmg actually just dont do anything 
     if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
+        #Variable Setup
         p1_user = db.getLatestChallenge()[1]
         p2_user = db.getLatestChallenge()[2]
-        game.startgame(p1_user, p2_user)
-
-        game_id = db.getLatestGameHistory()
-        p1_active = game.getCurrActivePokemon(game_id,p1_user)
-        p2_active = game.getCurrActivePokemon(game_id,p2_user)
-
-        p1_sprite = game.getPokeSprite(p1_active)
-        p2_sprite = game.getPokeSprite(p1_active)
-
-
-        return render_template("game.html", sprite1 = p1_sprite, sprite2 = p2_sprite)
+        game_id = db.getLatestGameHistory()[0]
+        p1_active = gameFunctions.getCurrActivePokemon(game_id, p1_user)
+        p2_active = gameFunctions.getCurrActivePokemon(game_id, p2_user)
+        p1_sprite = gameFunctions.getPokeSprite(p1_active)
+        p2_sprite = gameFunctions.getPokeSprite(p2_active)
+        p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
+        p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
+        #Returns moves available to the active pokemon and pokemon available to be swapped to
+        if session['username'] == p1_user:
+            activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p1_user)
+            inactivePokemon = gameFunctions.getInActivePokemon(game_id, p1_user)
+        elif session['username'] == p2_user:
+            activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p2_user)
+            inactivePokemon = gameFunctions.getInActivePokemon(game_id, p2_user)
+        #Auto Swaps when active pokemon has fainted -- still a bit buggy: only updates when you manually reload
+        if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
+            gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
+        if gameFunctions.getActivePokemonHP(game_id, p2_user) <= 0:
+            gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
+        #Handles User inputs
+        if session['username'] == p1_user:
+            #Surrendering
+            if request.form.get('form_type') == "surrender":
+                db.updateGameHistory(game_id, p2_user, p1_user, "idk how to get the time")
+                gameFunctions.updateElo(game_id)
+                return redirect('/')
+            #Swapping Pokemon
+            if request.form.get('form_type') == "swap":
+                gameFunctions.swapPokemon(game_id, p1_user, request.form['poke_name'])
+                return redirect('/game')
+            #Attacking
+            if request.form.get('form_type') == "attack":
+                damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
+                gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
+                return redirect('/game')
+        if session['username'] == p2_user:
+            #Surrendering
+            if request.form.get('form_type') == "surrender":
+                db.updateGameHistory(game_id, p1_user, p2_user, "idk")
+                gameFunctions.updateElo(game_id)
+                return redirect('/')
+            #Swapping Pokemon
+            if request.form.get('form_type') == "swap":
+                gameFunctions.swapPokemon(game_id, p2_user, request.form['poke_name'])
+                return redirect('/game')
+            #Attacking
+            if request.form.get('form_type') == "attack":
+                damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
+                gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
+                return redirect('/game')
+        return render_template("game.html", 
+                               username1 = p1_user, username2 = p2_user, poke1Name = p1_active, poke2Name = p2_active, sprite1 = p1_sprite, sprite2 = p2_sprite,
+                               pokeMoves = activePokeMoves, inactivePokemon = inactivePokemon,
+                               hp1 = p1_active_hp, hp2 = p2_active_hp)
     return redirect('/')
 
 @app.route("/challenge", methods=['GET', 'POST'])
@@ -184,6 +224,7 @@ def accept_your_fate():
         if db.getChallengeData("None", "challenged", session['username']) == None and db.getChallengeData("None", "challenger", request.form['username']) == None:
             print("please work")
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
+            gameFunctions.startgame(db.getLatestChallenge()[1], db.getLatestChallenge()[2])
             return redirect('/game')
     return redirect('/')
 

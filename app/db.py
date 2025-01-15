@@ -193,6 +193,13 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     db.commit()
     db.close()
 
+#Updates a value in a table with a new value
+def setActiveHP(new_HP, game_id, username, pokename):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
+    db.commit()
+    db.close()
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

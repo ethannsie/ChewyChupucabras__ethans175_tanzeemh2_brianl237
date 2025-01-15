@@ -20,7 +20,7 @@ def startgame(player1, player2):
         move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
         move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
         move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-        db.updateGamePokeList(id, player, randomPoke, db.getTableData("pokeDex", "poke_name", randomPoke)[4], "True", move1_ID, move2_ID, move3_ID, move4_ID)
+        db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "True", move1_ID, move2_ID, move3_ID, move4_ID)
 
         for i in range(5):
             randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
@@ -29,30 +29,15 @@ def startgame(player1, player2):
             move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
             move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
 
-            db.updateGamePokeList(id, player, randomPoke, db.getTableData("pokeDex", "poke_name", randomPoke)[4], "False", move1_ID, move2_ID, move3_ID, move4_ID)
+            db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
 
-#recieves game_id, username of player that's swapping, and name of the pokemon to swap into; updates gamePokeSets so new Pokemon is switched to active
+#recieves game_id, username of player that's swapping, and name of the pokemon to swap into; updates gamePokeStats so new Pokemon is switched to active
 def swapPokemon(game_id, username, swapPokeName):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             db.setTableData("gamePokeStats", "active_status", "False", "poke_name", pokemon[2]) #POSSIBLE ISSUE if there are multiple pokemon of the same name in the db
         elif pokemon[1] == username and pokemon[4] == "False" and pokemon[2] == swapPokeName:
             db.setTableData("gamePokeStats", "active_status", "True", "poke_name", pokemon[2])
-
-#helper function to get the name of the current active pokemon based on username and gameID -- may delete later cuz idk if this is really necessary
-def getCurrActivePokemon(game_id, username):
-    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
-        if pokemon[1] == username and pokemon[4] == "True":
-            return pokemon[2]
-
-def getPokeSprite(pokeName):
-    return db.getTableData("pokedex", "poke_name", pokeName)[10]
-
-def endGame():
-    return
-
-def turn():
-    return
 
 def battletext():
     return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
@@ -107,3 +92,34 @@ def updateElo(gameID):
 
     db.setTableData("users", "rank", winner_elo, "username", winner_user)
     db.setTableData("users", "rank", loser_elo, "username", loser_user)
+
+#too many helper functions
+def getCurrActivePokemon(game_id, username):
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "True":
+            return pokemon[2]
+def getInActivePokemon(game_id, username):
+    pokeList = []
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "False":
+            pokeList.append(pokemon[2])
+    return pokeList
+def getAlivePokemon(game_id, username):
+    pokeList = []
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "False" and pokemon[3] > 0:
+            pokeList.append(pokemon[2])
+    return pokeList
+def getActivePokemonMoves(game_id, username):
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "True":
+            return [db.getTableData("moves", "id", pokemon[5])[1], db.getTableData("moves", "id", pokemon[6])[1], db.getTableData("moves", "id", pokemon[7])[1], db.getTableData("moves", "id", pokemon[8])[1]]     
+def getPokeSprite(pokeName):
+    return db.getTableData("pokedex", "poke_name", pokeName)[10]
+def getActivePokemonHP(game_id, username):
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "True":
+            return pokemon[3]
+def updateActiveHP(game_id, username, pokeName, damage):
+    newHP = 0 if getActivePokemonHP(game_id, username) - damage < 0 else getActivePokemonHP(game_id, username) - damage
+    db.setActiveHP(newHP, game_id, username, pokeName)

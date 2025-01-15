@@ -57,53 +57,57 @@
                <!-- Opponent's Side -->
                {% if mode %}
                <div class="bg-gray-200 p-4 rounded shadow-md">
-                  <h3 class="text-xl font-bold text-center text-black">Opponent</h3>
+                  <h3 class="text-xl font-bold text-center text-black">{{ username1 }}</h3>
                   <div class="text-center mb-4">
-                     <div class="text-gray-700">Chupamon: <span class="font-semibold">ChupaFlame</span></div>
+                     <div class="text-gray-700">Chupamon: <span class="font-semibold">{{ poke1Name }}</span></div>
                      <div class="hp-bar-container">
                         <div class="hp-bar w-3/4"></div>
                      </div>
-                     <div class="text-gray-700 text-sm">HP: 75%</div>
+                     <div class="text-gray-700 text-sm">HP: {{ hp1}}</div>
                   </div>
                   <div class="bg-gray-300 w-40 h-40 mx-auto rounded-lg shadow-inner"></div>
                </div>
                {% else %}
                <div class="bg-gray-800 p-4 rounded shadow-md">
-                  <h3 class="text-xl font-bold text-center">Opponent</h3>
+                  <h3 class="text-xl font-bold text-center">{{ username1 }}</h3>
                   <div class="text-center mb-4">
-                     <div class="text-gray-300">Chupamon: <span class="font-semibold">ChupaFlame</span></div>
+                     <div class="text-gray-300">Chupamon: <span class="font-semibold">{{ poke1Name }}</span></div>
                      <div class="hp-bar-container">
                         <div class="hp-bar w-3/4"></div>
                      </div>
-                     <div class="text-gray-300 text-sm">HP: 75%</div>
+                     <div class="text-gray-300 text-sm">HP: {{ hp1 }}</div>
                   </div>
-                  <div class="bg-gray-300 w-40 h-40 mx-auto rounded-lg shadow-inner"></div>
+                  <div class="bg-gray-300 w-40 h-40 mx-auto rounded-lg shadow-inner">
+                     <img src="{{ sprite1 }}" alt="Pokemon1">
+                  </div>
                </div>
                {% endif %}
                <!-- Player's Side -->
                {% if mode %}
                <div class="bg-gray-200 p-4 rounded shadow-md">
-                  <h3 class="text-xl font-bold text-center text-black">You</h3>
+                  <h3 class="text-xl font-bold text-center text-black">{{ username2 }}</h3>
                   <div class="text-center mb-4">
-                     <div class="text-gray-700">Chupamon: <span class="font-semibold">ChupaBolt</span></div>
+                     <div class="text-gray-700">Chupamon: <span class="font-semibold">{{ poke2Name }}</span></div>
                      <div class="hp-bar-container">
                         <div class="hp-bar hp-bar-low w-1/2"></div>
                      </div>
-                     <div class="text-gray-700 text-sm">HP: 50%</div>
+                     <div class="text-gray-700 text-sm">HP: {{ hp2 }}</div>
                   </div>
                   <div class="bg-gray-300 w-40 h-40 mx-auto rounded-lg shadow-inner"></div>
                </div>
                {% else %}
                <div class="bg-gray-800 p-4 rounded shadow-md">
-                  <h3 class="text-xl font-bold text-center">You</h3>
+                  <h3 class="text-xl font-bold text-center">{{ username2 }}</h3>
                   <div class="text-center mb-4">
-                     <div class="text-gray-300">Chupamon: <span class="font-semibold">ChupaBolt</span></div>
+                     <div class="text-gray-300">Chupamon: <span class="font-semibold">{{ poke2Name }}</span></div>
                      <div class="hp-bar-container">
                         <div class="hp-bar hp-bar-low w-1/2"></div>
                      </div>
-                     <div class="text-gray-300 text-sm">HP: 50%</div>
+                     <div class="text-gray-300 text-sm">HP: {{ hp2 }}</div>
                   </div>
-                  <div class="bg-gray-700 w-40 h-40 mx-auto rounded-lg shadow-inner"></div>
+                  <div class="bg-gray-700 w-40 h-40 mx-auto rounded-lg shadow-inner">
+                     <img src="{{ sprite2 }}" alt="Pokemon1">
+                  </div>
                </div>
                {% endif %}
             </div>
@@ -112,25 +116,26 @@
             <div class="mt-8 bg-gray-200 p-4 rounded shadow-md text-center">
                <h3 class="text-2xl font-bold mb-4 text-black">Choose an Action</h3>
                <div class="grid grid-cols-2 gap-4">
-                  <button class="bg-blue-600 hover:bg-blue-300 text-white py-2 px-4 rounded">Attack</button>
-                  <button class="bg-green-600 hover:bg-green-300 text-white py-2 px-4 rounded">Switch</button>
+                  <button onclick="toggleHidden('move')" class="bg-blue-600 hover:bg-blue-300 text-white py-2 px-4 rounded">Attack</button>
+                  <button onclick="toggleHidden('swap')" class="bg-green-600 hover:bg-green-300 text-white py-2 px-4 rounded">Switch</button>
                </div>
                <div class="grid mt-5 grid-cols-1 gap-4">
-                  <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">Run</button>
+                  <form method="POST" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"><button name="form_type" value="surrender" class="">Run</button></form>
                </div>
             </div>
             {% else %}
             <div class="mt-8 bg-gray-800 p-4 rounded shadow-md text-center">
                <h3 class="text-2xl font-bold mb-4">Choose an Action</h3>
                <div class="grid grid-cols-2 gap-4">
-                  <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Attack</button>
-                  <button class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Switch</button>
+                  <button onclick="toggleHidden('move')" class="bg-blue-600 hover:bg-blue-300 text-white py-2 px-4 rounded">Attack</button>
+                  <button onclick="toggleHidden('swap')" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded">Switch</button>
                </div>
                <div class="grid mt-5 grid-cols-1 gap-4">
-                  <button class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded">Run</button>
+                  <form method="POST" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"><button name="form_type" value="surrender" class="w-full h-full">Run</button></form>
                </div>
             </div>
             {% endif %}
+
             <!-- Battle Log -->
             {% if mode %}
             <div class="mt-8 bg-gray-200 p-4 rounded shadow-md">
@@ -150,6 +155,52 @@
             </div>
             {% endif %}
          </main>
+         <!--Attack Button-->
+         <div id="move" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+            {% if mode %}
+            <div class="bg-gray-100 p-6 rounded shadow-lg w-96">
+               {% else %}
+               <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
+                  {% endif %}
+                  <h3 class="text-2xl font-bold mb-4">Choose a Move!</h3>
+                  <form action="/game" method="POST" class="space-y-4">
+                     <div>
+                        <select name="move_name" id = "move" size="4" required>
+                           {% for move in pokeMoves %}
+                           <option value="{{move}}"class="text-black">{{move}}</option>
+                           {% endfor %}
+                         </select>
+                     </div>
+                     <div class="flex justify-between items-center">
+                        <button name="form_type" value="attack" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Choose Move!</button>
+                        <button type="button" onclick="toggleHidden('move')" class="text-gray-400 hover:text-white">Cancel</button>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         <!--Swap Button-->
+         <div id="swap" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+               {% if mode %}
+               <div class="bg-gray-100 p-6 rounded shadow-lg w-96">
+                  {% else %}
+                  <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
+                     {% endif %}
+                     <h3 class="text-2xl font-bold mb-4">Swap Pokemon!</h3>
+                     <form action="/game" method="POST" class="space-y-4">
+                        <div>
+                           <select name="poke_name" id = "swap" size="5" required>
+                              {% for poke in inactivePokemon %}
+                              <option value="{{poke}}"class="text-black">{{poke}}</option>
+                              {% endfor %}
+                            </select>
+                        </div>
+                        <div class="flex justify-between items-center">
+                           <button name="form_type" value="swap" type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap!</button>
+                           <button type="button" onclick="toggleHidden('swap')" class="text-gray-400 hover:text-white">Cancel</button>
+                        </div>
+                     </form>
+                  </div>
+               </div>
          <!-- Footer -->
          {% if mode %}
          <footer class="bg-gray-300 p-4 text-center">
