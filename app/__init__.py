@@ -205,8 +205,8 @@ def game():
                     return redirect('/game')
                 #Attacking
                 if request.form.get('form_type') == "attack":
-                    damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
-                    gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
+                    damage = gameFunctions.damageCalc(request.form['move_name'], p1_active, p2_active)
+                    gameFunctions.updateActiveHP(game_id, p2_user, p2_active, damage)
                     return redirect('/game')
             if session['username'] == p2_user:
                 #Surrendering
