@@ -216,6 +216,13 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     db.commit()
     db.close()
 
+#Updates a value in a table with a new value
+def setActiveHP(new_HP, game_id, username, pokename):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
+    db.commit()
+    db.close()
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -233,7 +240,7 @@ def getGameHistory(userID):
 def getLatestGameHistory():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID",)
+    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID DESC",)
     result = c.fetchone()
     db.close()
     # check in case there is an error in fetching data
@@ -241,6 +248,20 @@ def getLatestGameHistory():
         return result
     else:
         return -1
+#Select latest game challenge based on ID
+def getLatestChallenge():
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge ORDER BY challenge_ID DESC",)
+    result = c.fetchone()
+    db.close()
+    # check in case there is an error in fetching data
+    if result:
+        return result
+    else:
+        return -1
+
+
 
 #Returning all data in any table
 def getTable(tableName):
