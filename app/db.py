@@ -13,7 +13,7 @@ DB_FILE = "chupaPokemon.db"
 def setup():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, rank INTEGER, created_at TEXT, last_login TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, rank INTEGER, in_game TEXT, created_at TEXT, last_login TEXT);")
     # Database holds all of the pokemon information for gen1; allows 6 pokemons to be chosen
     c.execute("CREATE TABLE IF NOT EXISTS pokeDex (poke_ID INTEGER PRIMARY KEY AUTOINCREMENT, poke_name TEXT, type_1 TEXT, type_2 TEXT, HP INTEGER, ATK INTEGER, DEF INTEGER, SpATK INTEGER, SpDEF INTEGER, SpE INTEGER, sprite_url TEXT);")
     # Integrate both of them together to randomly select the 4 moves each pokemon will get
@@ -117,7 +117,7 @@ def updateGamePokeList(game_ID, user, poke_name,active_hp, active_status, move1,
 def updateChallengeInitial(user1, user2):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO gameChallenge (challenger, challenged) VALUES (?, ?)", (user1,user2))
+    c.execute("INSERT INTO gameChallenge (accepted_status, challenger, challenged) VALUES (?,?, ?)", ("None",user1,user2))
     db.commit()
     db.close()
 
@@ -165,6 +165,17 @@ def getChallengeData(accepted_status, challenger, challenged):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("SELECT * FROM gameChallenge WHERE accepted_status = ? AND challenger = ? AND challenged = ?", (accepted_status, challenger, challenged))
+    result = c.fetchall()
+    db.close()
+    if result:
+        return result
+    else:
+        return -1
+
+def deleteChallenge(challenger, challenged):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("DELETE FROM gameChallenge WHERE challenge_ID = (SELECT MAX(challenge_ID) FROM gameChallenge) AND challenger = ? AND challenged = ?", (challenger, challenged))
     db.commit()
     db.close()
 
@@ -181,6 +192,7 @@ def getAllTableData(table, valueType, value):
         return result
     else:
         return -1
+
 def getStatFilteredData(table, stat, operator, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
@@ -232,6 +244,14 @@ def getTable(tableName):
     a = c.fetchall()
     db.close()
     return a
+
+def resetChallenge():
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("UPDATE gameChallenge SET accepted_status = ? WHERE accepted_status = ?", ("Over", "Yes"))
+    a = c.fetchall()
+    db.commit()
+    db.close()
 
 #Resetting any table
 def resetTable(tableName):

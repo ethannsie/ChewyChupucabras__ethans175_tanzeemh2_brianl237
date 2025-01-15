@@ -28,25 +28,35 @@ if (not os.path.isfile("chupaPokemon.db")):
     APIs.fetch_moves()
     APIs.fetch_type()
 
+counter_initialized = False
 
-#print(db.getTable("types"))
+def initialize_counter():
+    global counter_initialized
+    if not counter_initialized:
+        db.resetChallenge()
+        print(db.getTable("gameChallenge"))
+        counter_initialized = True
 
+# Call this function at the appropriate place in your Flask app
+initialize_counter()
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
+    print(db.getTable("gameChallenge"))
     passValue = 'username' in session
     if 'username' in session:
+        if db.getChallengeData("Yes", "challenger", session['username']) != -1:
+            return redirect("/game")
         challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         updateChallenges = []
         passUsers = {}
-        print(challenges)
         for user in active_sessions:
             if user != session['username']:
                 passUsers[user] = db.getUserID(session['username'])
         if challenges == -1:
             return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, mode = mode)
         for count, challenge in enumerate(challenges):
-            if challenge[3] == None:
+            if challenge[3] == 'None':
                 updateChallenges.append(challenge)
         return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode)
     return render_template("home.html", logged_in = passValue, mode = mode)
@@ -162,16 +172,21 @@ def game():
 @app.route("/challenge", methods=['GET', 'POST'])
 def challenge():
     if 'username' in session:
-        try:
-            db.updateChallengeInitial(session['username'], request.form['username'])
-        except:
+        db.updateChallengeInitial(session['username'], request.form['username'])
+        print(session['username'])
+        print(request.form['username'])
+        print(db.getChallengeData("None", session['username'], request.form['username']))
+        if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
+            print("bro what")
+            db.deleteChallenge(session['username'], request.form['username'])
+        if 'username' not in session:
             flash("You need to challenge users through the menu", 'error')
     return redirect('/')
 
 @app.route("/accept_your_fate", methods=['GET', 'POST'])
 def accept_your_fate():
     if 'username' in session and request.form != None:
-        if db.getChallengeData("None", "challenged", session['username']) == None and db.getChallengeData("None", "challenger", request.form['username']) == None:
+        if db.getChallengeData("None", request.form['username'], session['username']) != -1:
             print("please work")
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
             return redirect('/game')
