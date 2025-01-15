@@ -116,4 +116,5 @@ ethanS -- 2025-01-13 17:44
 
 ethanS -- 2025-01-13 22:03
 - Now the challenger also gets an updated screen, but the challenger must reload Screen
+- Also wiped all active games/challenges whenever the python is run from terminal again
 - Going to see if there's anyway to do not have to do this manually

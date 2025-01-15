@@ -244,6 +244,7 @@ def resetChallenge():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("UPDATE gameChallenge SET accepted_status = ? WHERE accepted_status = ?", ("Over", "Yes"))
+    c.execute("UPDATE users SET in_game = ?", ("No",))
     db.commit()
     db.close()
 
