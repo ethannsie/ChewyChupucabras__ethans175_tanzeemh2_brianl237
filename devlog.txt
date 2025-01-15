@@ -113,3 +113,7 @@ ethanS -- 2025-01-13 21:33
 ethanS -- 2025-01-13 17:44
 - Fixed challenging/accepting mechanisms for rate limiting
 - Need to make game challenge accepting dynamic + updating whether a user is in game when accepted_status
+
+ethanS -- 2025-01-13 22:03
+- Now the challenger also gets an updated screen, but the challenger must reload Screen
+- Going to see if there's anyway to do not have to do this manually
