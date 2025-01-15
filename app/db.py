@@ -132,6 +132,18 @@ def updateBattleLog(first_id, second_id, firstAction, secondAction):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO battlelog (first_id, second_id)")
+
+def initializeGameTracker(game_id):
+    db.sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+
+def updateGameTracker(game_id, player, move, oneOrTwo, turn):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("UPDATE gameTracker SET move" + str(oneOrTwo) + " = ? WHERE game_ID = ? AND player" + str(oneOrTwo) +  " = ? AND turn = ?", (move, game_id, player, turn))
+    db.commit()
+    db.close()
 # Database Manipulation
 
 #Selecting specific argument-based data

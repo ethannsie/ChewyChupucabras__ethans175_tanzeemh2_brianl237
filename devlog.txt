@@ -134,3 +134,7 @@ brianL -- 2025-01-14 23:54
 ethanS -- 2025-01-15 09:18
 - Updated surrendering, to update users table
 - Still breaks when the entries in the tables are the same (how is game_ID being updated?)
+
+ethanS -- 2025-01-15 11:00
+- Started working for entries! I don't kow why...
+- Updated some bugs and started working on turn-based system

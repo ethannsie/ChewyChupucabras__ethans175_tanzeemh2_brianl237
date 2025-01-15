@@ -64,6 +64,7 @@ def turn():
 def battletext(firstID, firstAction, secondID, secondAction):
     # calculate first speed, secondspeed outside of battletext
     if firstAction == "swap":
+        print("work")
         # swap pokemon code, Brian has that
     else:
         # pokemon move code, Brian has that
