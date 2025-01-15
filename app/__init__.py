@@ -42,7 +42,7 @@ initialize_counter()
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    print(db.getTable("gameChallenge"))
+    print(db.getTable("users"))
     passValue = 'username' in session
     if 'username' in session:
         if db.getTableData("users", "username", session['username'])[4] != "No":
@@ -162,8 +162,11 @@ def history():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
-    if 'username' in session: # this needs to be updated only redirect to game.html if there is an active challenge accepted on the user
-        return render_template("game.html", mode=mode)
+    passValue = 'username' in session
+    if 'username' in session:
+        if db.getTableData("users", "username", session['username'])[4] != "No":
+            return render_template("game.html", mode=mode, logged_in=passValue)
+    flash("You have not yet accepted a game challenge", 'error')
     return redirect('/')
 
 @app.route("/challenge", methods=['GET', 'POST'])

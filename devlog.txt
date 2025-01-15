@@ -118,3 +118,7 @@ ethanS -- 2025-01-13 22:03
 - Now the challenger also gets an updated screen, but the challenger must reload Screen
 - Also wiped all active games/challenges whenever the python is run from terminal again
 - Going to see if there's anyway to do not have to do this manually
+
+ethanS -- 2025-01-13 22:21
+- Added navbar back to game.html
+- Did some more updating to users table and fixed minor bugs
