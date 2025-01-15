@@ -26,7 +26,7 @@ def setup():
     # Database to track what games are being challenged
     c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted_status TEXT);")
     # Creates game_id (marks the start of the game) and tracks end results of each game, will also act as the main match history database
-    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY AUTOINCREMENT, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
     # Database keeps track of all six collection of pokemons from each game
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
@@ -223,6 +223,7 @@ def setActiveHP(new_HP, game_id, username, pokename):
     c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
     db.commit()
     db.close()
+
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
