@@ -45,7 +45,7 @@ def home():
     print(db.getTable("gameChallenge"))
     passValue = 'username' in session
     if 'username' in session:
-        if db.getChallengeData("Yes", "challenger", session['username']) != -1:
+        if db.getTableData("users", "username", session['username'])[4] != "No":
             return redirect("/game")
         challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         updateChallenges = []
@@ -174,7 +174,6 @@ def challenge():
         print(request.form['username'])
         print(db.getChallengeData("None", session['username'], request.form['username']))
         if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
-            print("bro what")
             db.deleteChallenge(session['username'], request.form['username'])
         if 'username' not in session:
             flash("You need to challenge users through the menu", 'error')
@@ -184,8 +183,11 @@ def challenge():
 def accept_your_fate():
     if 'username' in session and request.form != None:
         if db.getChallengeData("None", request.form['username'], session['username']) != -1:
-            print("please work")
+
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
+            db.setTableData("users", "in_game", request.form['username'], "username", session['username'])
+            db.setTableData("users", "in_game", session['username'], "username", request.form['username'])
+
             return redirect('/game')
     return redirect('/')
 

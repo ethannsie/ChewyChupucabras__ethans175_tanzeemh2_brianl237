@@ -43,7 +43,7 @@ def addUser(username, password):
     # datetime formatting for sqlite text
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # omits userID as an input as it autoincrements
-    c.execute("INSERT INTO users (username, password, rank, created_at, last_login) VALUES (?, ?, ?, ?, ?)", (username, password, 1000, created_at, created_at))
+    c.execute("INSERT INTO users (username, password, rank, in_game, created_at, last_login) VALUES (?, ?, ?, ?, ?, ?)", (username, password, 1000, "No", created_at, created_at))
     db.commit()
     db.close()
 
@@ -244,7 +244,6 @@ def resetChallenge():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("UPDATE gameChallenge SET accepted_status = ? WHERE accepted_status = ?", ("Over", "Yes"))
-    a = c.fetchall()
     db.commit()
     db.close()
 
