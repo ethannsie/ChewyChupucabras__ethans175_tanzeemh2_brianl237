@@ -152,13 +152,16 @@ def ladder():
             if rank == user[2]:
                 passData.append([user[0],user[1],user[2]])
                 userData.pop(count)
-
     return render_template("ladder.html", user_data = passData, mode = mode, logged_in = passValue)
 
 @app.route("/history", methods=['GET', 'POST'])
 def history():
     passValue = 'username' in session
-    return render_template("history.html", mode = mode, logged_in = passValue)
+    challenge_data = []
+    if passValue:
+        challenge_data = db.getChallengeHistory(session['username'])
+        challenge_data.append(db.getChallengeHistory(session['username']))
+    return render_template("history.html", mode = mode, logged_in = passValue, challenge_data = challenge_data[:len(challenge_data)-1])
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
@@ -173,9 +176,6 @@ def game():
 def challenge():
     if 'username' in session:
         db.updateChallengeInitial(session['username'], request.form['username'])
-        print(session['username'])
-        print(request.form['username'])
-        print(db.getChallengeData("None", session['username'], request.form['username']))
         if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
             db.deleteChallenge(session['username'], request.form['username'])
         if 'username' not in session:
@@ -186,11 +186,9 @@ def challenge():
 def accept_your_fate():
     if 'username' in session and request.form != None:
         if db.getChallengeData("None", request.form['username'], session['username']) != -1:
-
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
             db.setTableData("users", "in_game", request.form['username'], "username", session['username'])
             db.setTableData("users", "in_game", session['username'], "username", request.form['username'])
-
             return redirect('/game')
     return redirect('/')
 

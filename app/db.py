@@ -167,6 +167,17 @@ def getChallengeData(accepted_status, challenger, challenged):
     else:
         return -1
 
+def getChallengeHistory(username):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge WHERE challenger = ? OR challenged = ?", (username, username))
+    result = c.fetchall()
+    db.close()
+    if result:
+        return result
+    else:
+        return -1
+
 def deleteChallenge(challenger, challenged):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()

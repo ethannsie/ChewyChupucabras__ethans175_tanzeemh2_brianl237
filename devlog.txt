@@ -122,3 +122,6 @@ ethanS -- 2025-01-13 22:03
 ethanS -- 2025-01-13 22:21
 - Added navbar back to game.html
 - Did some more updating to users table and fixed minor bugs
+
+ethanS -- 2025-01-13 22:40
+- Updated Chupamon Records page to reflect challenges, but still needs to be updated with gameHistory data 
