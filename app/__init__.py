@@ -196,7 +196,7 @@ def game():
             if session['username'] == p1_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
-                    db.updateGameHistory(game_id, p2_user, p1_user, "idk how to get the time")
+                    db.updateGameHistory(game_id, p2_user, p1_user, "idke")
                     gameFunctions.updateElo(game_id)
                     return redirect('/')
                 #Swapping Pokemon
