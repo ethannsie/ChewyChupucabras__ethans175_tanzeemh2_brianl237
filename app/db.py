@@ -32,9 +32,11 @@ def setup():
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER, user TEXT, poke_name TEXT, active_hp REAL, active_status TEXT, move1 INTEGER, move2 INTEGER, move3 INTEGER, move4 INTEGER);")
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
-    c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
+    c.execute("DROP TABLE IF EXISTS gameTracker;")
+    c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
-    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER PRIMARY KEY, action TEXT);")
+    
+    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER, action TEXT);")
     db.commit()
     db.close()
 

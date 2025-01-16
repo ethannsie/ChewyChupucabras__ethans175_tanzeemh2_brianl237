@@ -28,7 +28,7 @@ if (not os.path.isfile("chupaPokemon.db")):
     APIs.fetch_poke()
     APIs.fetch_moves()
     APIs.fetch_type()
-
+db.setup()
 counter_initialized = False
 
 def initialize_counter():
@@ -236,7 +236,7 @@ def game():
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p1_active, p2_active)
-                    db.updateBattleLog(game_id, p1_active + "has dealt " + damage + " damage to " + p2_active)
+                    db.updateBattleLog(game_id, p1_active + "has dealt " + str(damage) + " damage to " + p2_active)
                     gameFunctions.updateActiveHP(game_id, p2_user, p2_active, damage)
                     db.updateGameTracker(game_id, session['username'], "attack", 1, )
             if session['username'] == p2_user:
@@ -255,7 +255,7 @@ def game():
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
-                    db.updateBattleLog(game_id, p2_active + "has dealt " + damage + " damage to " + p1_active)
+                    db.updateBattleLog(game_id, p2_active + "has dealt " + str(damage) + " damage to " + p1_active)
                     gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
 
             return render_template("game.html",
