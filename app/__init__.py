@@ -5,6 +5,7 @@
 # Time Spent: not enough hours
 
 import random
+import datetime
 import os
 import sqlite3
 import sys
@@ -165,8 +166,8 @@ def history():
     challenge_data = []
     if passValue:
         challenge_data = db.getChallengeHistory(session['username'])
-        challenge_data.append(db.getChallengeHistory(session['username']))
-    return render_template("history.html", mode = mode, logged_in = passValue, challenge_data = challenge_data[:len(challenge_data)-1])
+        # challenge_data.append(db.getChallengeHistory(session['username']))
+    return render_template("history.html", mode = mode, logged_in = passValue, challenge_data = challenge_data)
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
@@ -186,7 +187,7 @@ def game():
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
             db.updateBattleLog(game_id, " ")
-            battlelog = db.getTableData("battlelog", "game_ID", game_id)
+            battlelog = db.getAllTableData("battlelog", "game_ID", game_id)
 
             # ISSUE: MAKE SURE YOU ACTUALLY NEED TO MAKE A NEW TURN-- same code to check if a turn has passed
             db.initializeGameTracker(game_id)
@@ -204,22 +205,22 @@ def game():
             if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
                 if (gameFunctions.getAlivePokemon(game_id, p1_user)):
                     gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
-                    db.updateBattleLog(game_id, p1_active + "has fainted! Swap to your next chupamon!")
+                    db.updateBattleLog(game_id, p1_active + " has fainted! Swap to your next chupamon!")
                     return redirect('/game')
                 else:
-                    db.updateGameHistory(game_id, p2_user, p1_user, "idk")
-                    db.updateBattleLog(game_id, p1_user + "has lost! " + p2_user + " is the winner!")
+                    db.updateGameHistory(game_id, p2_user, p1_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateBattleLog(game_id, p1_user + " has lost! " + p2_user + " is the winner!")
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
             if gameFunctions.getActivePokemonHP(game_id, p2_user) <= 0:
                 if (gameFunctions.getAlivePokemon(game_id, p2_user)):
                     gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
-                    db.updateBattleLog(game_id, p2_active + "has fainted! Swap to your next chupamon!")
+                    db.updateBattleLog(game_id, p2_active + " has fainted! Swap to your next chupamon!")
                     return redirect('/game')
                 else:
-                    db.updateGameHistory(game_id, p1_user, p2_user, "idk")
-                    db.updateBattleLog(game_id, p2_user + "has lost! " + p1_user + " is the winner!")
+                    db.updateGameHistory(game_id, p1_user, p2_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateBattleLog(game_id, p2_user + " has lost! " + p1_user + " is the winner!")
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -229,8 +230,8 @@ def game():
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
                     # Put message in battle log that user surrendered
-                    db.updateBattleLog(game_id, p1_user + "has surrendered")
-                    db.updateGameHistory(game_id, p2_user, p1_user, "idke")
+                    db.updateBattleLog(game_id, p1_user + " has surrendered")
+                    db.updateGameHistory(game_id, p2_user, p1_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -243,15 +244,15 @@ def game():
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p1_active, p2_active)
-                    db.updateBattleLog(game_id, p1_active + "has dealt " + str(damage) + " damage to " + p2_active)
+                    db.updateBattleLog(game_id, p1_active + " has dealt " + str(damage) + " damage to " + p2_active)
                     gameFunctions.updateActiveHP(game_id, p2_user, p2_active, damage)
                     return redirect('/game')
             if session['username'] == p2_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
                     # Put message in battle log that user surrendered
-                    db.updateBattleLog(game_id, p2_user + "has surrendered")
-                    db.updateGameHistory(game_id, p1_user, p2_user, "idk")
+                    db.updateBattleLog(game_id, p2_user + " has surrendered")
+                    db.updateGameHistory(game_id, p1_user, p2_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -263,7 +264,7 @@ def game():
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
-                    db.updateBattleLog(game_id, p2_active + "has dealt " + str(damage) + " damage to " + p1_active)
+                    db.updateBattleLog(game_id, p2_active + " has dealt " + str(damage) + " damage to " + p1_active)
                     gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
                     return redirect('/game')
 
