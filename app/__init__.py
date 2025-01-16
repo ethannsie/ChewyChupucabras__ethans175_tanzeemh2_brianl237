@@ -192,12 +192,26 @@ def game():
             elif session['username'] == p2_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p2_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p2_user)
-            #Auto Swaps when active pokemon has fainted -- still a bit buggy: only updates when you manually reload
+            #Auto Swaps when active pokemon has fainted
             if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
-                gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
+                if (gameFunctions.getAlivePokemon(game_id, p1_user)):
+                    gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
+                    return redirect('/game')
+                else:
+                    db.updateGameHistory(game_id, p2_user, p1_user, "idk")
+                    gameFunctions.updateElo(game_id)
+                    db.resetUsers(p1_user, p2_user)
+                    return redirect('/')
             if gameFunctions.getActivePokemonHP(game_id, p2_user) <= 0:
-                gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
-                #Handles User inputs
+                if (gameFunctions.getAlivePokemon(game_id, p2_user)):
+                    gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
+                    return redirect('/game')
+                else:
+                    db.updateGameHistory(game_id, p1_user, p2_user, "idk")
+                    gameFunctions.updateElo(game_id)
+                    db.resetUsers(p1_user, p2_user)
+                    return redirect('/')
+            #Handles User inputs
             if session['username'] == p1_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
