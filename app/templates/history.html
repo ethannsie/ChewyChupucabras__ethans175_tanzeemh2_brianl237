@@ -58,6 +58,30 @@
             <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the Chupamon Records!</h2>
          </div>
 
+
+         <table class="w-full table-auto border-collapse border border-gray-200">
+            <thead class="bg-blue-500 text-white">
+               <tr>
+                  <th class="px-4 py-2 border border-gray-300">Game_ID</th>
+                  <th class="px-4 py-2 border border-gray-300">Challenger</th>
+                  <th class="px-4 py-2 border border-gray-300">Challenged</th>
+                  <th class="px-4 py-2 border border-gray-300">Winner</th>
+                  <th class="px-4 py-2 border border-gray-300">Time</th>
+               </tr>
+            </thead>
+            <tbody id="ranking-body" class="text-gray-700">
+               {% for challenge in challenge_data %}
+               <tr class="odd:bg-gray-50 even:bg-gray-100">
+                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
+                  <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[1]}}</td>
+                  <td class="px-4 py-2 text-center border border-gray-300">{{challenge[2]}}</td>
+                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
+                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+
       </main>
       <!-- Account Settings  -->
       {% if mode %}

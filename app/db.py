@@ -26,7 +26,7 @@ def setup():
     # Database to track what games are being challenged
     c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted_status TEXT);")
     # Creates game_id (marks the start of the game) and tracks end results of each game, will also act as the main match history database
-    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY AUTOINCREMENT, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
     # Database keeps track of all six collection of pokemons from each game
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
@@ -34,7 +34,7 @@ def setup():
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
     c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
-    c.execute("CREATE TABLE IF NOT EXISTS battlelog (first_id INTEGER, second_id INTEGER, firstAction TEXT, secondAction TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER PRIMARY KEY, first_id INTEGER, second_id INTEGER, action TEXT);")
     db.commit()
     db.close()
 
@@ -44,7 +44,7 @@ def addUser(username, password):
     # datetime formatting for sqlite text
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # omits userID as an input as it autoincrements
-    c.execute("INSERT INTO users (username, password, rank, created_at, last_login) VALUES (?, ?, ?, ?, ?)", (username, password, 1000, created_at, created_at))
+    c.execute("INSERT INTO users (username, password, rank, in_game, created_at, last_login) VALUES (?, ?, ?, ?, ?, ?)", (username, password, 1000, "No", created_at, created_at))
     db.commit()
     db.close()
 
@@ -128,10 +128,10 @@ def updateChallengeFinal(accepted_status, challenger, challenged):
     db.commit()
     db.close()
 
-def updateBattleLog(first_id, second_id, firstAction, secondAction):
+def updateBattleLog(game_ID, first_id, second_id, action):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO battlelog (first_id, second_id, firstAction, secondAction) VALUES (?, ?, ?, ?)", (first_id, second_id, firstAction, secondAction))
+    c.execute("INSERT INTO battlelog (game_ID, first_id, second_id, action) VALUES (?, ?, ?, ?)", (game_ID, first_id, second_id, action))
     db.commit()
     db.close()
 # Database Manipulation
@@ -167,6 +167,17 @@ def getChallengeData(accepted_status, challenger, challenged):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("SELECT * FROM gameChallenge WHERE accepted_status = ? AND challenger = ? AND challenged = ?", (accepted_status, challenger, challenged))
+    result = c.fetchall()
+    db.close()
+    if result:
+        return result
+    else:
+        return -1
+
+def getChallengeHistory(username):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge WHERE challenger = ? OR challenged = ?", (username, username))
     result = c.fetchall()
     db.close()
     if result:
@@ -212,6 +223,14 @@ def setTableData(table, updateValueType, newValue, valueType, value):
     db.commit()
     db.close()
 
+#Updates a value in a table with a new value
+def setActiveHP(new_HP, game_id, username, pokename):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
+    db.commit()
+    db.close()
+
 #Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -229,7 +248,7 @@ def getGameHistory(userID):
 def getLatestGameHistory():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID",)
+    c.execute("SELECT * FROM gamePokeStats ORDER BY game_ID DESC",)
     result = c.fetchone()
     db.close()
     # check in case there is an error in fetching data
@@ -237,6 +256,20 @@ def getLatestGameHistory():
         return result
     else:
         return -1
+#Select latest game challenge based on ID
+def getLatestChallenge():
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("SELECT * FROM gameChallenge ORDER BY challenge_ID DESC",)
+    result = c.fetchone()
+    db.close()
+    # check in case there is an error in fetching data
+    if result:
+        return result
+    else:
+        return -1
+
+
 
 #Returning all data in any table
 def getTable(tableName):
@@ -250,8 +283,16 @@ def getTable(tableName):
 def resetChallenge():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("UPDATE gameChallenge SET accepted_status = ? WHERE accepted_status = ?", ("Over", "Yes"))
-    a = c.fetchall()
+    c.execute("UPDATE gameChallenge SET accepted_status = ?", ("Over",))
+    c.execute("UPDATE users SET in_game = ?", ("No",))
+    db.commit()
+    db.close()
+
+def resetUsers(username1, username2):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("UPDATE users SET in_game = ? WHERE username = ?", ("No",username1))
+    c.execute("UPDATE users SET in_game = ? WHERE username = ?", ("No",username2))
     db.commit()
     db.close()
 

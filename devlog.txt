@@ -110,6 +110,27 @@ ethanS -- 2025-01-13 21:19
 ethanS -- 2025-01-13 21:33
 - Fixed html for game.html
 
-ethanS -- 2025-01-13 17:44
+ethanS -- 2025-01-14 17:44
 - Fixed challenging/accepting mechanisms for rate limiting
 - Need to make game challenge accepting dynamic + updating whether a user is in game when accepted_status
+
+ethanS -- 2025-01-14 22:03
+- Now the challenger also gets an updated screen, but the challenger must reload Screen
+- Also wiped all active games/challenges whenever the python is run from terminal again
+- Going to see if there's anyway to do not have to do this manually
+
+ethanS -- 2025-01-14 22:21
+- Added navbar back to game.html
+- Did some more updating to users table and fixed minor bugs
+
+ethanS -- 2025-01-14 22:40
+- Updated Chupamon Records page to reflect challenges, but still needs to be updated with gameHistory data
+
+brianL -- 2025-01-14 23:54
+- renamed game.py to gameFunctions.py
+- updated gameFunctions.py with some helper functions
+- updated init and game.html to implement some of the game mechanics
+
+ethanS -- 2025-01-15 09:18
+- Updated surrendering, to update users table
+- Still breaks when the entries in the tables are the same (how is game_ID being updated?)

@@ -52,84 +52,79 @@
             </div>
          </header>
          {% endif %}
-      <!-- Main Content -->
-      <main class="flex-grow container mx-auto p-8">
-         <div class="text-center">
-            <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
-         </div>
-
-<!-- To do:
-Allow the bar to take in input
-Receive the input as a search request, see if ID or name is in database
-Return only the letter match
-Maybe include something to search for stats?
-Show everyone with stats above a certain extent on the page
--->
-         <form method="get" action="{{ url_for('chupadex') }}" class="text-center mb-6">
-            <input type="text" name="search" id="searchBar" placeholder="Search by ChupaID or Name" class="text-black p-2 rounded">
-            <br>
-            
-            <select name="stat" class="text-black p-2 rounded">
-               <option value="">--Select Stat--</option>
-               <option value="HP">HP</option>
-               <option value="ATK">Attack</option>
-               <option value="DEF">Defense</option>
-               <option value="SpATK">Special Attack</option>
-               <option value="SpDEF">Special Defense</option>
-               <option value="SpE">Speed</option>
-            </select>
-
-            <select name="operator" class="text-black p-2 rounded">
-               <option value="">--Select Operator--</option>
-               <option value=">">Above</option>
-               <option value="<">Below</option>
-               <option value=">=">Above or Equal</option>
-               <option value="<=">Below or Equal</option>
-            </select>
-
-            <input type="number" name="value" placeholder="Enter Value" class="text-black p-2 rounded">
-            <br>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Search</button>
-         </form>
-         <!-- Pokémon Grid -->
-         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+         <!-- Main Content -->
+         <main class="flex-grow container mx-auto p-8">
+            <div class="text-center">
+               <h2 class="text-6xl font-bold mb-20 mt-20">Welcome to the ChupaDex!</h2>
+            </div>
+            <form method="get" action="{{ url_for('chupadex') }}" class="text-center mb-6">
+               <input type="text" name="search" id="searchBar" placeholder="Search by ChupaID or Name" class="text-black p-2 rounded">
+               <br>
+               <select name="stat" class="text-black p-2 rounded">
+                  <option value="">--Select Stat--</option>
+                  <option value="HP">HP</option>
+                  <option value="ATK">Attack</option>
+                  <option value="DEF">Defense</option>
+                  <option value="SpATK">Special Attack</option>
+                  <option value="SpDEF">Special Defense</option>
+                  <option value="SpE">Speed</option>
+               </select>
+               <select name="operator" class="text-black p-2 rounded">
+                  <option value="">--Select Operator--</option>
+                  <option value=">">Above</option>
+                  <option value="<">Below</option>
+                  <option value=">=">Above or Equal</option>
+                  <option value="<=">Below or Equal</option>
+               </select>
+               <input type="number" name="value" placeholder="Enter Value" class="text-black p-2 rounded">
+               <br>
+               <button type="submit" class="bg-blue-500 text-white p-2 rounded">Search</button>
+            </form>
+            <!-- Pokémon Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% if search == 1 %}
-               {% for pokemon in pokemon_data %}
-               {% if mode %}
-               <div class="bg-gray-300 p-4 rounded shadow-lg text-center">
-               {% else %}
-               <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
-               {% endif %}
-                  <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
-                  <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
-                  <p class="text-sm text-gray-600">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
-                  <div class="mt-4 text-gray-600 text-sm">
-                     <p>HP: {{ pokemon[4] }}</p>
-                     <p>ATK: {{ pokemon[5] }}</p>
-                     <p>DEF: {{ pokemon[6] }}</p>
-                     <p>SpATK: {{ pokemon[7] }}</p>
-                     <p>SpDEF: {{ pokemon[8] }}</p>
-                     <p>Speed: {{ pokemon[9] }}</p>
-                  </div>
-               </div>
-               {% endfor %}
+            {% for pokemon in pokemon_data %}
+            {% if mode %}
+            <div class="bg-gray-300 p-4 rounded shadow-lg text-center">
             {% else %}
-               <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
-                  <img src="{{ pokemon_data[10] }}" alt="{{ pokemon_data[1] }}" class="mx-auto w-24 h-24">
-                  <h3 class="text-xl font-bold mt-2">
-                     {% if pokemon_data[1] is string %}
-                        {{ "Chupa" + pokemon_data[1][(pokemon_data[1]|length)//2-2:]}}
-                     {% else %}
-                        {{"Chupa" + pokemon_data[1] | string}}
-                     {% endif %}
-                  </h3>
-                  {% if mode %}
-                  <p class="text-sm text-gray-600">Type: {{ pokemon_data[2] | capitalize }}{% if pokemon_data[3] %} / {{ pokemon_data[3] | capitalize }}{% endif %}</p>
-                  <div class="mt-4 text-gray-600 text-sm">
+            <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+            {% endif %}
+            <img src="{{ pokemon[10] }}" alt="{{ pokemon[1] }}" class="mx-auto w-24 h-24">
+            {% if mode %}
+            <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
+            <p class="text-sm text-gray-600">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
+            <div class="mt-4 text-gray-600 text-sm">
+               {% else %}
+               <h3 class="text-xl font-bold mt-2">{{ "Chupa" + pokemon[1][(pokemon[1]|length)//2-2:]}}</h3>
+               <p class="text-sm text-white-400">Type: {{ pokemon[2] | capitalize }}{% if pokemon[3] %} / {{ pokemon[3] | capitalize }}{% endif %}</p>
+               <div class="mt-4 text-gray-300 text-sm">
+                  {% endif %}
+                  <p>HP: {{ pokemon[4] }}</p>
+                  <p>ATK: {{ pokemon[5] }}</p>
+                  <p>DEF: {{ pokemon[6] }}</p>
+                  <p>SpATK: {{ pokemon[7] }}</p>
+                  <p>SpDEF: {{ pokemon[8] }}</p>
+                  <p>Speed: {{ pokemon[9] }}</p>
+               </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="bg-gray-800 p-4 rounded shadow-lg text-center">
+               <img src="{{ pokemon_data[10] }}" alt="{{ pokemon_data[1] }}" class="mx-auto w-24 h-24">
+               <h3 class="text-xl font-bold mt-2">
+                  {% if pokemon_data[1] is string %}
+                  {{ "Chupa" + pokemon_data[1][(pokemon_data[1]|length)//2-2:]}}
+                  {% else %}
+                  {{"Chupa" + pokemon_data[1] | string}}
+                  {% endif %}
+               </h3>
+               {% if mode %}
+               <p class="text-sm text-gray-600">Type: {{ pokemon_data[2] | capitalize }}{% if pokemon_data[3] %} / {{ pokemon_data[3] | capitalize }}{% endif %}</p>
+               <div class="mt-4 text-gray-600 text-sm">
                   {% else %}
                   <p class="text-sm text-gray-400">Type: {{ pokemon_data[2] | capitalize }}{% if pokemon_data[3] %} / {{ pokemon_data[3] | capitalize }}{% endif %}</p>
                   <div class="mt-4 text-gray-400 text-sm">
-                  {% endif %}
+                     {% endif %}
                      <p>HP: {{ pokemon_data[4] }}</p>
                      <p>ATK: {{ pokemon_data[5] }}</p>
                      <p>DEF: {{ pokemon_data[6] }}</p>
@@ -138,52 +133,51 @@ Show everyone with stats above a certain extent on the page
                      <p>Speed: {{ pokemon_data[9] }}</p>
                   </div>
                </div>
-            {% endif %}
-
-         </div>
-      </main>
-      <!-- Account Settings  -->
-      {% if mode %}
-      <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
-         <div class="bg-gray-300 p-6 rounded shadow-lg w-96">
-            <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
-            {% if logged_in %}
-            <form action="/mode_swap" method="POST" class="space-y-4">
-               <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
-            </form>
-            {% else %}
-            <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
-            {% endif %}
-            <div class="flex justify-between items-center">
-               <button type="button" onclick="toggleHidden('settings')" class="text-gray-600 hover:text-black">Cancel</button>
+               {% endif %}
+            </div>
+         </main>
+         <!-- Account Settings  -->
+         {% if mode %}
+         <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+            <div class="bg-gray-300 p-6 rounded shadow-lg w-96">
+               <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+               {% if logged_in %}
+               <form action="/mode_swap" method="POST" class="space-y-4">
+                  <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+               </form>
+               {% else %}
+               <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+               {% endif %}
+               <div class="flex justify-between items-center">
+                  <button type="button" onclick="toggleHidden('settings')" class="text-gray-600 hover:text-black">Cancel</button>
+               </div>
             </div>
          </div>
-      </div>
-      {% else %}
-      <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
-         <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
-            <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
-            {% if logged_in %}
-            <form action="/mode_swap" method="POST" class="space-y-4">
-               <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
-            </form>
-            {% else %}
-            <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
-            {% endif %}
-            <div class="flex justify-between items-center">
-               <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
+         {% else %}
+         <div id="settings" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center">
+            <div class="bg-gray-800 p-6 rounded shadow-lg w-96">
+               <h3 class="text-2xl font-bold mb-4">Account Settings</h3>
+               {% if logged_in %}
+               <form action="/mode_swap" method="POST" class="space-y-4">
+                  <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
+               </form>
+               {% else %}
+               <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+               {% endif %}
+               <div class="flex justify-between items-center">
+                  <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
+               </div>
             </div>
          </div>
-      </div>
-      {% endif %}
-      <!-- Footer -->
-      {% if mode %}
-      <footer class="bg-gray-300 p-4 text-center">
-      <p class="text-gray-700 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
-      {% else %}
-      <footer class="bg-gray-800 p-4 text-center">
-         <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
          {% endif %}
-      </footer>
+         <!-- Footer -->
+         {% if mode %}
+         <footer class="bg-gray-300 p-4 text-center">
+         <p class="text-gray-700 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+         {% else %}
+         <footer class="bg-gray-800 p-4 text-center">
+            <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
+            {% endif %}
+         </footer>
    </body>
 </html>
