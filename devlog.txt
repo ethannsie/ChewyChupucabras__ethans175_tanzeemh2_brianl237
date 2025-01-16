@@ -142,3 +142,7 @@ ethanS -- 2025-01-15 11:00
 brianL -- 2025-01-15 20:53
 - Fixed auto swapping so that it updates automatically
 - Game now properly ends when all pokemon have fainted
+
+brianL -- 2025-01-15 22:51
+- Updated API.py to add only moves that do damage
+- reset db for new changes
