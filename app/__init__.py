@@ -20,8 +20,6 @@ app = Flask(__name__)
 mode = False
 app.secret_key = os.urandom(32)
 active_sessions = {}
-turn_count = 0
-turn_confirm = 0
 
 #os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
@@ -36,7 +34,6 @@ def initialize_counter():
     global counter_initialized
     if not counter_initialized:
         db.resetChallenge()
-        print(db.getTable("gameChallenge"))
         counter_initialized = True
 
 # Call this function at the appropriate place in your Flask app
@@ -44,7 +41,6 @@ initialize_counter()
 
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    print(db.getTable("users"))
     passValue = 'username' in session
     if 'username' in session:
         if db.getTableData("users", "username", session['username'])[4] != "No":
@@ -65,38 +61,45 @@ def home():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
-    username = request.form['username']
-    password = request.form['password']
-    password2 = request.form.get('password2')
-
-    if password != password2:
-        flash("Passwords do not match", 'error')
-        return redirect("/")
-    elif db.getUserID(username) >= 0:
-        flash("Username already exists", 'error')
+    if not request.form:
+        flash("You must use the menu to register", 'error')
         return redirect("/")
     else:
-        session['username'] = username
-        active_sessions[session['username']] = db.getUserID(session['username'])
-        flash("Registered Sucessfully!", "success")
-        db.addUser(username, password)
-        return redirect("/")
+        username = request.form['username']
+        password = request.form['password']
+        password2 = request.form.get('password2')
+
+        if password != password2:
+            flash("Passwords do not match", 'error')
+            return redirect("/")
+        elif db.getUserID(username) >= 0:
+            flash("Username already exists", 'error')
+            return redirect("/")
+        else:
+            session['username'] = username
+            active_sessions[session['username']] = db.getUserID(session['username'])
+            flash("Registered Sucessfully!", "success")
+            db.addUser(username, password)
+            return redirect("/")
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
-
-    if username in active_sessions:
-        flash("You already have an active session.", 'error')
-    elif db.getUserID(username) >= 0 and db.getTableData("users", "username", username)[2] == password:
-        session['username'] = username
-        active_sessions[session['username']] = db.getUserID(session['username'])
-        db.updateLoginTime(session['username'])
-        flash("Logged in", 'success')
+    if not request.form:
+        flash("You must use the menu to log in", 'error')
+        return redirect("/")
     else:
-        flash("Incorrect username or password.", 'error')
-    return redirect("/")
+        username = request.form['username']
+        password = request.form['password']
+        if username in active_sessions:
+            flash("You already have an active session.", 'error')
+        elif db.getUserID(username) >= 0 and db.getTableData("users", "username", username)[2] == password:
+            session['username'] = username
+            active_sessions[session['username']] = db.getUserID(session['username'])
+            db.updateLoginTime(session['username'])
+            flash("Logged in", 'success')
+        else:
+            flash("Incorrect username or password.", 'error')
+        return redirect("/")
 
 @app.route("/logout", methods=['GET', 'POST'])
 def logout():
@@ -182,8 +185,8 @@ def game():
             p2_sprite = gameFunctions.getPokeSprite(p2_active)
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
-            print("player 1: " + p1_user + "p1_sprite: " + p1_active)
-            print("player 2: " + p2_user + "p2_sprite: " + p2_active)
+            # print("player 1: " + p1_user + "p1_sprite: " + p1_active)
+            # print("player 2: " + p2_user + "p2_sprite: " + p2_active)
 
             #Returns moves available to the active pokemon and pokemon available to be swapped to
             if session['username'] == p1_user:
@@ -255,29 +258,38 @@ def game():
 
 @app.route("/challenge", methods=['GET', 'POST'])
 def challenge():
-    if 'username' in session and session['username'] != request.form['username']:
-        db.updateChallengeInitial(session['username'], request.form['username'])
-        if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
-            db.deleteChallenge(session['username'], request.form['username'])
-        if 'username' not in session:
-            flash("You need to challenge users through the menu", 'error')
-    return redirect('/')
+    if not request.form:
+        flash("You must use the menu to challenge other players", 'error')
+        return redirect('/')
+    else:
+        if 'username' in session and session['username'] != request.form['username']:
+            db.updateChallengeInitial(session['username'], request.form['username'])
+            if db.getChallengeData("None", session['username'], request.form['username']) != -1 and len(db.getChallengeData("None", session['username'], request.form['username'])) > 1:
+                db.deleteChallenge(session['username'], request.form['username'])
+            if 'username' not in session:
+                flash("You need to challenge users through the menu", 'error')
+        return redirect('/')
 
 @app.route("/accept_your_fate", methods=['GET', 'POST'])
 def accept_your_fate():
-    if 'username' in session and request.form != None:
+    if 'username' in session and request.form:
         if db.getChallengeData("None", request.form['username'], session['username']) != -1:
             db.updateChallengeFinal("Yes", request.form['username'], session['username'])
             db.setTableData("users", "in_game", request.form['username'], "username", session['username'])
             db.setTableData("users", "in_game", session['username'], "username", request.form['username'])
             gameFunctions.startgame(db.getLatestChallenge()[1], db.getLatestChallenge()[2])
             return redirect('/game')
+    else:
+        flash("You must use the menu to accept challenges", 'error')
     return redirect('/')
 
 @app.route("/mode_swap", methods=['GET', 'POST'])
 def mode_swap():
-    global mode
-    mode = not mode
+    if 'username' in session:
+        global mode
+        mode = not mode
+    else:
+        flash("You must access your account settings to change modes", 'error')
     return redirect('/')
 
 if __name__ == '__main__':

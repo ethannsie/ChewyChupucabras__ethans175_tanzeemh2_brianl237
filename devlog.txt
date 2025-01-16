@@ -158,3 +158,6 @@ ethanS -- 2025-01-16 12:51
 
 ethanS -- 2025-01-16 12:59
 - Cleaned up db.py
+
+ethanS -- 2025-01-16 13:18
+- Cleaned up __init__.py and added more flash messages
