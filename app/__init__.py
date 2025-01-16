@@ -181,6 +181,8 @@ def game():
             p2_sprite = gameFunctions.getPokeSprite(p2_active)
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
+            db.updateBattleLog(game_id, " ")
+            battlelog = db.getTableData("battlelog", "game_ID", game_id)
 
             # ISSUE: MAKE SURE YOU ACTUALLY NEED TO MAKE A NEW TURN-- same code to check if a turn has passed
             db.initializeGameTracker(game_id)
@@ -216,7 +218,7 @@ def game():
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
             #Handles User inputs
-            
+
             if session['username'] == p1_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
@@ -255,7 +257,7 @@ def game():
                     damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
                     db.updateBattleLog(game_id, p2_active + "has dealt " + damage + " damage to " + p1_active)
                     gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
-            battlelog = db.getAllTableData("battlelog", "game_ID", game_id)
+
             return render_template("game.html",
                                        username1 = p1_user, username2 = p2_user, poke1Name = p1_active, poke2Name = p2_active, sprite1 = p1_sprite, sprite2 = p2_sprite,
                                        pokeMoves = activePokeMoves, inactivePokemon = inactivePokemon,

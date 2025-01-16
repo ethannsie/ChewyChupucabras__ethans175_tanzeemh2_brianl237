@@ -128,10 +128,10 @@ def updateChallengeFinal(accepted_status, challenger, challenged):
     db.commit()
     db.close()
 
-def updateBattleLog(game_ID, first_id, second_id, action):
+def updateBattleLog(game_id, action):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO battlelog (game_ID, first_id, second_id, action) VALUES (?, ?, ?, ?)", (game_ID, first_id, second_id, action))
+    c.execute("INSERT INTO battlelog (game_ID, action) VALUES (?, ?)", (game_id, action))
     db.commit()
     db.close()
 
