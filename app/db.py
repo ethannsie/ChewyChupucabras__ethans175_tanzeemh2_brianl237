@@ -131,7 +131,9 @@ def updateChallengeFinal(accepted_status, challenger, challenged):
 def updateBattleLog(first_id, second_id, firstAction, secondAction):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO battlelog (first_id, second_id)")
+    c.execute("INSERT INTO battlelog (first_id, second_id, firstAction, secondAction) VALUES (?, ?, ?, ?)", (first_id, second_id, firstAction, secondAction))
+    db.commit()
+    db.close()
 # Database Manipulation
 
 #Selecting specific argument-based data
