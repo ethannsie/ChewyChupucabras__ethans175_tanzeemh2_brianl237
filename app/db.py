@@ -132,11 +132,15 @@ def updateBattleLog(first_id, second_id, firstAction, secondAction):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO battlelog (first_id, second_id)")
+    db.commit()
+    db.close()
 
 def initializeGameTracker(game_id):
-    db.sqlite3.connect(DB_FILE, check_same_thread=False)
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+    c.execute("INSERT OR REPLACE INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+    db.commit()
+    db.close()
 
 def updateGameTracker(game_id, player, move, oneOrTwo, turn):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

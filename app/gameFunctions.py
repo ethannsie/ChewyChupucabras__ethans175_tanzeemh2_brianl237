@@ -24,11 +24,13 @@ def startgame(player1, player2):
 
         for i in range(5):
             randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
-            move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-            move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-            move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-            move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-
+            try:
+                move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            except:
+                print("nope lol")
             db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
 
 #recieves game_id, username of player that's swapping, and name of the pokemon to swap into; updates gamePokeStats so new Pokemon is switched to active
