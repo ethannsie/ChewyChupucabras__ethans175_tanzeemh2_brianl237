@@ -151,3 +151,7 @@ ethanS -- 2025-01-16 12:14
 - Fixed bugs
 - No turn-based system (infinite turn system) for reduced complexity
 - Task to complete soon: clean up files, improve css, add a button for match searching, add more to account settings, add an end screen message when game has concluded
+
+ethanS -- 2025-01-16 12:51
+- Added chart for types to game.html
+- Clean up to ensue soon
