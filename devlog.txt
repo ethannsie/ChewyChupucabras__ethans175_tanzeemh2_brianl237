@@ -155,3 +155,6 @@ ethanS -- 2025-01-16 12:14
 ethanS -- 2025-01-16 12:51
 - Added chart for types to game.html
 - Clean up to ensue soon
+
+ethanS -- 2025-01-16 12:59
+- Cleaned up db.py

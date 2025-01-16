@@ -21,23 +21,21 @@ def setup():
     c.execute("CREATE TABLE IF NOT EXISTS pokemon_moves (poke_name TEXT, move_id INTEGER);")
     # Database holds all of the pokemon types with their type matchups
     c.execute("CREATE TABLE IF NOT EXISTS types (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, double_dmg_from TEXT, double_dmg_to TEXT, half_dmg_from TEXT, half_dmg_to TEXT, no_dmg_from TEXT, no_dmg_to TEXT);")
-
-
     # Database to track what games are being challenged
     c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted_status TEXT);")
     # Creates game_id (marks the start of the game) and tracks end results of each game, will also act as the main match history database
     c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
     # Database keeps track of all six collection of pokemons from each game
-    c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
+    # c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (game_ID INTEGER PRIMARY KEY, user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER, user TEXT, poke_name TEXT, active_hp REAL, active_status TEXT, move1 INTEGER, move2 INTEGER, move3 INTEGER, move4 INTEGER);")
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
-    c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
-
+    # c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
     c.execute("CREATE TABLE IF NOT EXISTS battlelog (first_id INTEGER, second_id INTEGER, firstAction TEXT, secondAction TEXT);")
     db.commit()
     db.close()
 
+# User Initialization and Manipulation --------------------------------
 def addUser(username, password):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
@@ -45,15 +43,6 @@ def addUser(username, password):
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     # omits userID as an input as it autoincrements
     c.execute("INSERT INTO users (username, password, rank, in_game, created_at, last_login) VALUES (?, ?, ?, ?, ?, ?)", (username, password, 1000, "No", created_at, created_at))
-    db.commit()
-    db.close()
-
-def updateLoginTime(username):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    userID = getUserID(username)
-    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    c.execute("UPDATE users SET last_login = ? WHERE user_id = ?", (current_time, userID))
     db.commit()
     db.close()
 
@@ -70,6 +59,16 @@ def getUserID(username):
     else:
         return -1
 
+def updateLoginTime(username):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    userID = getUserID(username)
+    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    c.execute("UPDATE users SET last_login = ? WHERE user_id = ?", (current_time, userID))
+    db.commit()
+    db.close()
+
+# Table Updating and Manipulation of Data --------------------------------
 def updatePokeList(name, type_1, type_2, hp, attack, defense, special_attack, special_defense, speed, sprite_url):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
@@ -135,21 +134,37 @@ def updateBattleLog(first_id, second_id, firstAction, secondAction):
     db.commit()
     db.close()
 
-def initializeGameTracker(game_id):
+# def initializeGameTracker(game_id):
+#     db = sqlite3.connect(DB_FILE, check_same_thread=False)
+#     c = db.cursor()
+#     c.execute("INSERT OR REPLACE INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+#     db.commit()
+#     db.close()
+
+# def updateGameTracker(game_id, player, move, oneOrTwo, turn):
+#     db = sqlite3.connect(DB_FILE, check_same_thread=False)
+#     c = db.cursor()
+#     c.execute("UPDATE gameTracker SET move" + str(oneOrTwo) + " = ? WHERE game_ID = ? AND player" + str(oneOrTwo) +  " = ? AND turn = ?", (move, game_id, player, turn))
+#     db.commit()
+#     db.close()
+
+#Updates a value in a table with a new value
+def setTableData(table, updateValueType, newValue, valueType, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT OR REPLACE INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+    c.execute(f"UPDATE {table} SET {updateValueType} = '{newValue}' WHERE {valueType} = ?", (value,))
     db.commit()
     db.close()
 
-def updateGameTracker(game_id, player, move, oneOrTwo, turn):
+#Updates a value in a table with a new value
+def setActiveHP(new_HP, game_id, username, pokename):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("UPDATE gameTracker SET move" + str(oneOrTwo) + " = ? WHERE game_ID = ? AND player" + str(oneOrTwo) +  " = ? AND turn = ?", (move, game_id, player, turn))
+    c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
     db.commit()
     db.close()
-# Database Manipulation
 
+# Getting information from tables ------------------------------------------
 #Selecting specific argument-based data
 def getTableData(table, valueType, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -199,13 +214,6 @@ def getChallengeHistory(username):
     else:
         return -1
 
-def deleteChallenge(challenger, challenged):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    c.execute("DELETE FROM gameChallenge WHERE challenge_ID = (SELECT MAX(challenge_ID) FROM gameChallenge) AND challenger = ? AND challenged = ?", (challenger, challenged))
-    db.commit()
-    db.close()
-
 #Selecting specific argument-based data -- same as getTableData except gets all rows instead of only one
 def getAllTableData(table, valueType, value):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -229,23 +237,7 @@ def getStatFilteredData(table, stat, operator, value):
     db.close()
     return pokemon_data
 
-#Updates a value in a table with a new value
-def setTableData(table, updateValueType, newValue, valueType, value):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    c.execute(f"UPDATE {table} SET {updateValueType} = '{newValue}' WHERE {valueType} = ?", (value,))
-    db.commit()
-    db.close()
-
-#Updates a value in a table with a new value
-def setActiveHP(new_HP, game_id, username, pokename):
-    db = sqlite3.connect(DB_FILE, check_same_thread=False)
-    c = db.cursor()
-    c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
-    db.commit()
-    db.close()
-
-#Selected all user-specific matches
+# Selected all user-specific matches
 def getGameHistory(userID):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
@@ -270,6 +262,7 @@ def getLatestGameHistory():
         return result
     else:
         return -1
+
 #Select latest game challenge based on ID
 def getLatestChallenge():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -283,8 +276,6 @@ def getLatestChallenge():
     else:
         return -1
 
-
-
 #Returning all data in any table
 def getTable(tableName):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
@@ -293,6 +284,15 @@ def getTable(tableName):
     a = c.fetchall()
     db.close()
     return a
+
+
+# Resetting of Tables ----------------------------------------------
+def deleteChallenge(challenger, challenged):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("DELETE FROM gameChallenge WHERE challenge_ID = (SELECT MAX(challenge_ID) FROM gameChallenge) AND challenger = ? AND challenged = ?", (challenger, challenged))
+    db.commit()
+    db.close()
 
 def resetChallenge():
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
