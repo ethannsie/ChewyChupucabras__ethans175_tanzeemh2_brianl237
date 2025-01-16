@@ -34,7 +34,7 @@ def setup():
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
     c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
 
-    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER PRIMARY KEY, first_id INTEGER, second_id INTEGER, action TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER PRIMARY KEY, action TEXT);")
     db.commit()
     db.close()
 
@@ -132,11 +132,16 @@ def updateBattleLog(game_ID, first_id, second_id, action):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO battlelog (game_ID, first_id, second_id, action) VALUES (?, ?, ?, ?)", (game_ID, first_id, second_id, action))
+    db.commit()
+    db.close()
+
 
 def initializeGameTracker(game_id):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     c.execute("INSERT INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+    db.commit()
+    db.close()
 
 def updateGameTracker(game_id, player, move, oneOrTwo, turn):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)

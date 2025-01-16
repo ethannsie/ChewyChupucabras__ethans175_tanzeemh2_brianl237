@@ -61,17 +61,6 @@ def endGame():
 def turn():
     return
 
-def battletext(first_id, firstAction, second_id, secondAction):
-    # calculate first speed, secondspeed outside of battletext
-    if firstAction == "swap":
-        print("work")
-        # swap pokemon code, Brian has that
-    else:
-        # pokemon move code, Brian has that
-        db.getTableData()
-
-    return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
-
 #recieves name of move used, name of attacking pokemon, name of recieving pokemon; returns dmg
 def damageCalc(move, attacker, reciever):
     #Base Stats + RNG
