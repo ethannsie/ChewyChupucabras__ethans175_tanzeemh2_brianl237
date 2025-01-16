@@ -35,6 +35,7 @@ def startgame(player1, player2):
 
 #recieves game_id, username of player that's swapping, and name of the pokemon to swap into; updates gamePokeStats so new Pokemon is switched to active
 def swapPokemon(game_id, username, swapPokeName):
+    print(db.getAllTableData("gamePokeStats", "game_ID", game_id))
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             db.setTableData("gamePokeStats", "active_status", "False", "poke_name", pokemon[2]) #POSSIBLE ISSUE if there are multiple pokemon of the same name in the db
@@ -130,28 +131,34 @@ def getCurrActivePokemon(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             return pokemon[2]
+
 def getInActivePokemon(game_id, username):
     pokeList = []
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "False":
             pokeList.append(pokemon[2])
     return pokeList
+
 def getAlivePokemon(game_id, username):
     pokeList = []
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "False" and pokemon[3] > 0:
             pokeList.append(pokemon[2])
     return pokeList
+
 def getActivePokemonMoves(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             return [db.getTableData("moves", "id", pokemon[5])[1], db.getTableData("moves", "id", pokemon[6])[1], db.getTableData("moves", "id", pokemon[7])[1], db.getTableData("moves", "id", pokemon[8])[1]]
+
 def getPokeSprite(pokeName):
     return db.getTableData("pokedex", "poke_name", pokeName)[10]
+
 def getActivePokemonHP(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             return pokemon[3]
+
 def updateActiveHP(game_id, username, pokeName, damage):
     newHP = 0 if getActivePokemonHP(game_id, username) - damage < 0 else getActivePokemonHP(game_id, username) - damage
     db.setActiveHP(newHP, game_id, username, pokeName)
