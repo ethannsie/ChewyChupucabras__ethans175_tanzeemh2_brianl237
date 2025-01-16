@@ -134,3 +134,15 @@ brianL -- 2025-01-14 23:54
 ethanS -- 2025-01-15 09:18
 - Updated surrendering, to update users table
 - Still breaks when the entries in the tables are the same (how is game_ID being updated?)
+
+ethanS -- 2025-01-15 11:00
+- Started working for entries! I don't kow why...
+- Updated some bugs and started working on turn-based system
+
+brianL -- 2025-01-15 20:53
+- Fixed auto swapping so that it updates automatically
+- Game now properly ends when all pokemon have fainted
+
+brianL -- 2025-01-15 22:51
+- Updated API.py to add only moves that do damage
+- reset db for new changes

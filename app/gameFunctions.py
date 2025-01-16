@@ -63,12 +63,12 @@ def turn():
 
 def battletext(first_id, firstAction, second_id, secondAction):
     # calculate first speed, secondspeed outside of battletext
-    # if firstAction == "swap":
-    #     # swap pokemon code, Brian has that
-    #     db.getTableData()
-    # else:
-    #     # pokemon move code, Brian has that
-    #     db.getTableData()
+    if firstAction == "swap":
+        print("work")
+        # swap pokemon code, Brian has that
+    else:
+        # pokemon move code, Brian has that
+        db.getTableData()
 
     return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
 

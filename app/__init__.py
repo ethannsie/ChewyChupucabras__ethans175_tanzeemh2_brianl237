@@ -166,6 +166,7 @@ def history():
 
 @app.route("/game", methods=['GET', 'POST'])
 def game():
+    game_id = db.getTable("gameHistory")
     passValue = 'username' in session
     if 'username' in session:
         if db.getTableData("users", "username", session['username'])[4] != "No":
@@ -180,6 +181,10 @@ def game():
             p2_sprite = gameFunctions.getPokeSprite(p2_active)
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
+
+            # ISSUE: MAKE SURE YOU ACTUALLY NEED TO MAKE A NEW TURN-- same code to check if a turn has passed
+            db.initalizeGameTracker(game_id)
+
             #Returns moves available to the active pokemon and pokemon available to be swapped to
             if session['username'] == p1_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p1_user)
@@ -187,15 +192,29 @@ def game():
             elif session['username'] == p2_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p2_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p2_user)
-            #Auto Swaps when active pokemon has fainted -- still a bit buggy: only updates when you manually reload
+            #Auto Swaps when active pokemon has fainted
             if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
-                gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
-                # Put message in battle log that pokemon fainted
-                db.updateBattleLog(game_id, p1_user, p2_user, p1_active + "has fainted! Swap to your next chupamon!")
+                if (gameFunctions.getAlivePokemon(game_id, p1_user)):
+                    gameFunctions.swapPokemon(game_id, p1_user, gameFunctions.getAlivePokemon(game_id, p1_user)[0])
+                    db.updateBattleLog(game_id, p1_user, p2_user, p1_active + "has fainted! Swap to your next chupamon!")
+                    return redirect('/game')
+                else:
+                    db.updateGameHistory(game_id, p2_user, p1_user, "idk")
+                    gameFunctions.updateElo(game_id)
+                    db.resetUsers(p1_user, p2_user)
+                    return redirect('/')
             if gameFunctions.getActivePokemonHP(game_id, p2_user) <= 0:
-                gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
-                # Put message in battle log that pokemon fainted
-                #Handles User inputs
+                if (gameFunctions.getAlivePokemon(game_id, p2_user)):
+                    gameFunctions.swapPokemon(game_id, p2_user, gameFunctions.getAlivePokemon(game_id, p2_user)[0])
+                    db.updateBattleLog(game_id, p1_user, p2_user, p2_active + "has fainted! Swap to your next chupamon!")
+                    return redirect('/game')
+                else:
+                    db.updateGameHistory(game_id, p1_user, p2_user, "idk")
+                    gameFunctions.updateElo(game_id)
+                    db.resetUsers(p1_user, p2_user)
+                    return redirect('/')
+            #Handles User inputs
+            
             if session['username'] == p1_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
@@ -206,14 +225,13 @@ def game():
                 #Swapping Pokemon
                 if request.form.get('form_type') == "swap":
                     gameFunctions.swapPokemon(game_id, p1_user, request.form['poke_name'])
-                    # Put message in battle log that p1_user swapped to so and so pokemon
-                    return redirect('/game')
+                    # GET THE TURN FROM THE GAMETRACKER AND ALSO INCREMENT IT
+                    db.updateGameTracker(game_id, session['username'], "swap", 1, )
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p1_active, p2_active)
                     gameFunctions.updateActiveHP(game_id, p2_user, p2_active, damage)
-                    # Put message in battle log that p2_user attacked for how much damage
-                    return redirect('/game')
+                    db.updateGameTracker(game_id, session['username'], "attack", 1, )
             if session['username'] == p2_user:
                 #Surrendering
                 if request.form.get('form_type') == "surrender":
@@ -225,14 +243,10 @@ def game():
                 #Swapping Pokemon
                 if request.form.get('form_type') == "swap":
                     gameFunctions.swapPokemon(game_id, p2_user, request.form['poke_name'])
-                    # Put message in battle log that user swapped
-                    return redirect('/game')
                 #Attacking
                 if request.form.get('form_type') == "attack":
                     damage = gameFunctions.damageCalc(request.form['move_name'], p2_active, p1_active)
                     gameFunctions.updateActiveHP(game_id, p1_user, p1_active, damage)
-                    # Put message in battle log that user attacked for such damage
-                    return redirect('/game')
             return render_template("game.html",
                                        username1 = p1_user, username2 = p2_user, poke1Name = p1_active, poke2Name = p2_active, sprite1 = p1_sprite, sprite2 = p2_sprite,
                                        pokeMoves = activePokeMoves, inactivePokemon = inactivePokemon,

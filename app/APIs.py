@@ -26,7 +26,7 @@ def fetch_moves():
     if moves_data:
         for move in moves_data['results']:
             move_details = fetch_data(move['url'])
-            if move_details and move_details['generation']['name'] == 'generation-i':
+            if move_details and move_details['generation']['name'] == 'generation-i' and move_details['power']:
                 # Extract move details
                 move_id = move_details['id']
                 name = move_details['name']
