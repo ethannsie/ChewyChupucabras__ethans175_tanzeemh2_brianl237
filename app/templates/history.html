@@ -63,20 +63,18 @@
             <thead class="bg-blue-500 text-white">
                <tr>
                   <th class="px-4 py-2 border border-gray-300">Game_ID</th>
-                  <th class="px-4 py-2 border border-gray-300">Challenger</th>
-                  <th class="px-4 py-2 border border-gray-300">Challenged</th>
                   <th class="px-4 py-2 border border-gray-300">Winner</th>
-                  <th class="px-4 py-2 border border-gray-300">Time</th>
+                  <th class="px-4 py-2 border border-gray-300">Loser</th>
+                  <th class="px-4 py-2 border border-gray-300">End Time</th>
                </tr>
             </thead>
             <tbody id="ranking-body" class="text-gray-700">
                {% for challenge in challenge_data %}
                <tr class="odd:bg-gray-50 even:bg-gray-100">
-                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
+                  <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[0]}} </td>
                   <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[1]}}</td>
                   <td class="px-4 py-2 text-center border border-gray-300">{{challenge[2]}}</td>
-                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
-                  <td class="px-4 py-2 text-center border border-gray-300"> idk </td>
+                  <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[4]}} </td>
                </tr>
                {% endfor %}
             </tbody>

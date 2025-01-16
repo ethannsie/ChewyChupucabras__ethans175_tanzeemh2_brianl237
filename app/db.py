@@ -30,8 +30,10 @@ def setup():
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER, user TEXT, poke_name TEXT, active_hp REAL, active_status TEXT, move1 INTEGER, move2 INTEGER, move3 INTEGER, move4 INTEGER);")
     # Tracks the game once it's begun, will make a new entry to track every turn between two players
-    # c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER PRIMARY KEY, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
-    c.execute("CREATE TABLE IF NOT EXISTS battlelog (first_id INTEGER, second_id INTEGER, firstAction TEXT, secondAction TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gameTracker (game_ID INTEGER, player1 TEXT, player2 TEXT, move1 TEXT, move2 TEXT, turn INTEGER);")
+
+    
+    c.execute("CREATE TABLE IF NOT EXISTS battlelog (game_ID INTEGER, action TEXT);")
     db.commit()
     db.close()
 
@@ -127,10 +129,25 @@ def updateChallengeFinal(accepted_status, challenger, challenged):
     db.commit()
     db.close()
 
-def updateBattleLog(first_id, second_id, firstAction, secondAction):
+def updateBattleLog(game_id, action):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
-    c.execute("INSERT INTO battlelog (first_id, second_id)")
+    c.execute("INSERT INTO battlelog (game_ID, action) VALUES (?, ?)", (game_id, action))
+    db.commit()
+    db.close()
+
+
+def initializeGameTracker(game_id):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("INSERT INTO gameTracker (game_id, turn) VALUES (?,?)", (game_id, 0))
+    db.commit()
+    db.close()
+
+def updateGameTracker(game_id, player, move, oneOrTwo, turn):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    c.execute("UPDATE gameTracker SET move" + str(oneOrTwo) + " = ? WHERE game_ID = ? AND player" + str(oneOrTwo) +  " = ? AND turn = ?", (move, game_id, player, turn))
     db.commit()
     db.close()
 
@@ -208,6 +225,7 @@ def getChallengeHistory(username):
     c = db.cursor()
     c.execute("SELECT * FROM gameChallenge WHERE challenger = ? OR challenged = ?", (username, username))
     result = c.fetchall()
+    print(result)
     db.close()
     if result:
         return result

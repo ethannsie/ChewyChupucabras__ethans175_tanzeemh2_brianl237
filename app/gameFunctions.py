@@ -16,10 +16,13 @@ def startgame(player1, player2):
         #does the same for each of the remaining five pokemon except it is inactive
         #POSSIBLE ISSUE is that there are duplicate moves/pokemon selected from jst random chance
         randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
-        move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-        move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-        move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-        move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        try:
+            move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+            move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+        except:
+            print("nope lol")
         db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "True", move1_ID, move2_ID, move3_ID, move4_ID)
 
         for i in range(5):
@@ -63,17 +66,6 @@ def endGame():
 #repeat
 def turn():
     return
-
-def battletext(firstID, firstAction, secondID, secondAction):
-    # calculate first speed, secondspeed outside of battletext
-    if firstAction == "swap":
-        print("work")
-        # swap pokemon code, Brian has that
-    else:
-        # pokemon move code, Brian has that
-        db.getTableData()
-
-    return ["Player 1's Diglett used earthquake! It did x damage!", "Player 2's Pikachu used "]
 
 #recieves name of move used, name of attacking pokemon, name of recieving pokemon; returns dmg
 def damageCalc(move, attacker, reciever):
