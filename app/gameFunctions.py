@@ -124,13 +124,22 @@ def getCurrActivePokemon(game_id, username):
         if pokemon[1] == username and pokemon[4] == "True":
             return pokemon[2]
 
+def getInActivePokemonTypes(game_id, username):
+    pokeList = []
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        types = []
+        if pokemon[1] == username and pokemon[4] == "False":
+            types = [db.getTableData("pokeDex", "poke_name", pokemon[2])[2]]
+            if db.getTableData("pokeDex", "poke_name", pokemon[2])[3]:
+                types.append(db.getTableData("pokeDex", "poke_name", pokemon[2])[3])
+            pokeList.append(types)
+    return pokeList
 def getInActivePokemon(game_id, username):
     pokeList = []
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "False":
             pokeList.append(pokemon[2])
     return pokeList
-
 def getAlivePokemon(game_id, username):
     pokeList = []
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
@@ -142,7 +151,10 @@ def getActivePokemonMoves(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
         if pokemon[1] == username and pokemon[4] == "True":
             return [db.getTableData("moves", "id", pokemon[5])[1], db.getTableData("moves", "id", pokemon[6])[1], db.getTableData("moves", "id", pokemon[7])[1], db.getTableData("moves", "id", pokemon[8])[1]]
-
+def getActivePokemonMovesTypes(game_id, username):
+    for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
+        if pokemon[1] == username and pokemon[4] == "True":
+            return [db.getTableData("moves", "id", pokemon[5])[2], db.getTableData("moves", "id", pokemon[6])[2], db.getTableData("moves", "id", pokemon[7])[2], db.getTableData("moves", "id", pokemon[8])[2]]
 def getPokeSprite(pokeName):
     return db.getTableData("pokedex", "poke_name", pokeName)[10]
 

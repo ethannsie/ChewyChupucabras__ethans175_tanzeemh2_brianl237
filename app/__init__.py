@@ -186,6 +186,8 @@ def game():
             p2_sprite = gameFunctions.getPokeSprite(p2_active)
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
+            p1_max_hp = 0.01*(db.getTableData("pokeDex", "poke_name", p1_active)[4]  * 2) * 100 + 110
+            p2_max_hp = 0.01*(db.getTableData("pokeDex", "poke_name", p2_active)[4]  * 2) * 100 + 110
             db.updateBattleLog(game_id, " ")
             battlelog = db.getAllTableData("battlelog", "game_ID", game_id)
 
@@ -197,10 +199,14 @@ def game():
             #Returns moves available to the active pokemon and pokemon available to be swapped to
             if session['username'] == p1_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p1_user)
+                activePokeMovesTypes = gameFunctions.getActivePokemonMovesTypes(game_id, p1_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p1_user)
+                inactivePokemonTypes = gameFunctions.getInActivePokemonTypes(game_id, p1_user)
             elif session['username'] == p2_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p2_user)
+                activePokeMovesTypes = gameFunctions.getActivePokemonMovesTypes(game_id, p2_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p2_user)
+                inactivePokemonTypes = gameFunctions.getInActivePokemonTypes(game_id, p2_user)
             #Auto Swaps when active pokemon has fainted
             if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
                 if (gameFunctions.getAlivePokemon(game_id, p1_user)):
@@ -271,7 +277,9 @@ def game():
             return render_template("game.html",
                                        username1 = p1_user, username2 = p2_user, poke1Name = p1_active, poke2Name = p2_active, sprite1 = p1_sprite, sprite2 = p2_sprite,
                                        pokeMoves = activePokeMoves, inactivePokemon = inactivePokemon,
+                                       moveTypes = activePokeMovesTypes, pokemonTypes = inactivePokemonTypes,
                                        hp1 = p1_active_hp, hp2 = p2_active_hp, mode=mode, logged_in=passValue,
+                                       hp1_percentage = p1_active_hp/p1_max_hp, hp2_percentage = p2_active_hp/p2_max_hp,
                                        battlelog = battlelog)
     flash("You have not yet accepted a game challenge", 'error')
     return redirect('/')
