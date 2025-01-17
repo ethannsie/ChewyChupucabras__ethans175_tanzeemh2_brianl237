@@ -108,6 +108,7 @@
                <br>
                <button type="submit" class="bg-blue-500 text-white p-2 rounded">Search</button>
             </form>
+            
             <!-- Pokémon Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {% if search == 1 %}
@@ -135,7 +136,7 @@
                   <p>Speed: {{ pokemon[9] }}</p>
                </div>
                <!-- Right here -->
-               <button id="addPokemonButton" onclick="addPokemon('{{pokemon[1]}}')"> Add Pokemon </button>
+               <button id="addPokemonButton" onclick="addPokemon('{{pokemon[1]}}')" class="bg-blue-800 text-white p-1 rounded"> Add Pokemon </button>
             </div>
             {% endfor %}
             {% else %}
@@ -162,6 +163,7 @@
                      <p>SpDEF: {{ pokemon_data[8] }}</p>
                      <p>Speed: {{ pokemon_data[9] }}</p>
                   </div>
+                  <button id="addPokemonButton" onclick="addPokemon('{{pokemon_data[1]}}')" class="bg-blue-800 text-white p-1 rounded"> Add Pokemon </button>
                </div>
                {% endif %}
             </div>

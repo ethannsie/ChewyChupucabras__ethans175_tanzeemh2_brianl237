@@ -65,7 +65,6 @@
                   <th class="px-4 py-2 border border-gray-300">Game_ID</th>
                   <th class="px-4 py-2 border border-gray-300">Winner</th>
                   <th class="px-4 py-2 border border-gray-300">Loser</th>
-                  <th class="px-4 py-2 border border-gray-300">End Time</th>
                </tr>
             </thead>
             <tbody id="ranking-body" class="text-gray-700">
@@ -74,7 +73,6 @@
                   <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[0]}} </td>
                   <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[1]}}</td>
                   <td class="px-4 py-2 text-center border border-gray-300">{{challenge[2]}}</td>
-                  <td class="px-4 py-2 text-center border border-gray-300"> {{challenge[3]}} </td>
                </tr>
                {% endfor %}
             </tbody>
@@ -107,7 +105,7 @@
                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Swap Screen Color</button>
             </form>
             {% else %}
-            <h3 class="text-2xl font-bold mb-4">Log in first!</h3>
+            <h3 class="text-2xl font-bold mb-4">Log in first!</h3> 
             {% endif %}
             <div class="flex justify-between items-center">
                <button type="button" onclick="toggleHidden('settings')" class="text-gray-400 hover:text-white">Cancel</button>
