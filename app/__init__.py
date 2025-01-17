@@ -21,6 +21,7 @@ app = Flask(__name__)
 mode = False
 app.secret_key = os.urandom(32)
 active_sessions = {}
+anchor = False
 
 #os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
@@ -49,6 +50,7 @@ def home():
         challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         updateChallenges = []
         passUsers = {}
+        global anchor
         for user in active_sessions:
             if user != session['username']:
                 passUsers[user] = db.getUserID(session['username'])
@@ -57,6 +59,9 @@ def home():
         for count, challenge in enumerate(challenges):
             if challenge[3] == 'None':
                 updateChallenges.append(challenge)
+        if anchor:
+            anchor = False
+            return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode, anchor = not anchor)
         return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode)
     return render_template("home.html", logged_in = passValue, mode = mode)
 
@@ -202,21 +207,27 @@ def game():
             p2_sprite = gameFunctions.getPokeSprite(p2_active)
             p1_active_hp = gameFunctions.getActivePokemonHP(game_id, p1_user)
             p2_active_hp = gameFunctions.getActivePokemonHP(game_id, p2_user)
+            p1_max_hp = 0.01*(db.getTableData("pokeDex", "poke_name", p1_active)[4]  * 2) * 100 + 110
+            p2_max_hp = 0.01*(db.getTableData("pokeDex", "poke_name", p2_active)[4]  * 2) * 100 + 110
             db.updateBattleLog(game_id, " ")
             battlelog = db.getAllTableData("battlelog", "game_ID", game_id)
 
             # ISSUE: MAKE SURE YOU ACTUALLY NEED TO MAKE A NEW TURN-- same code to check if a turn has passed
-            db.initializeGameTracker(game_id)
+            # db.initializeGameTracker(game_id)
             # print("player 1: " + p1_user + "p1_sprite: " + p1_active)
             # print("player 2: " + p2_user + "p2_sprite: " + p2_active)
 
             #Returns moves available to the active pokemon and pokemon available to be swapped to
             if session['username'] == p1_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p1_user)
+                activePokeMovesTypes = gameFunctions.getActivePokemonMovesTypes(game_id, p1_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p1_user)
+                inactivePokemonTypes = gameFunctions.getInActivePokemonTypes(game_id, p1_user)
             elif session['username'] == p2_user:
                 activePokeMoves = gameFunctions.getActivePokemonMoves(game_id, p2_user)
+                activePokeMovesTypes = gameFunctions.getActivePokemonMovesTypes(game_id, p2_user)
                 inactivePokemon = gameFunctions.getInActivePokemon(game_id, p2_user)
+                inactivePokemonTypes = gameFunctions.getInActivePokemonTypes(game_id, p2_user)
             #Auto Swaps when active pokemon has fainted
             if gameFunctions.getActivePokemonHP(game_id, p1_user) <= 0:
                 if (gameFunctions.getAlivePokemon(game_id, p1_user)):
@@ -226,6 +237,7 @@ def game():
                 else:
                     db.updateGameHistory(game_id, p2_user, p1_user)
                     db.updateBattleLog(game_id, p1_user + " has lost! " + p2_user + " is the winner!")
+                    flash(p1_user + " has lost! " + p2_user + " is the winner!", 'success')
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -237,6 +249,7 @@ def game():
                 else:
                     db.updateGameHistory(game_id, p1_user, p2_user)
                     db.updateBattleLog(game_id, p2_user + " has lost! " + p1_user + " is the winner!")
+                    flash(p2_user + " has lost! " + p1_user + " is the winner!", 'success')
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -287,7 +300,9 @@ def game():
             return render_template("game.html",
                                        username1 = p1_user, username2 = p2_user, poke1Name = p1_active, poke2Name = p2_active, sprite1 = p1_sprite, sprite2 = p2_sprite,
                                        pokeMoves = activePokeMoves, inactivePokemon = inactivePokemon,
+                                       moveTypes = activePokeMovesTypes, pokemonTypes = inactivePokemonTypes,
                                        hp1 = p1_active_hp, hp2 = p2_active_hp, mode=mode, logged_in=passValue,
+                                       hp1_percentage = p1_active_hp/p1_max_hp, hp2_percentage = p2_active_hp/p2_max_hp,
                                        battlelog = battlelog)
     flash("You have not yet accepted a game challenge", 'error')
     return redirect('/')
@@ -317,6 +332,15 @@ def accept_your_fate():
             return redirect('/game')
     else:
         flash("You must use the menu to accept challenges", 'error')
+    return redirect('/')
+
+@app.route('/search_for_fate', methods=['GET', 'POST'])
+def search_for_fate():
+    if 'username' in session:
+        global anchor
+        anchor = True
+    else:
+        flash("Must be logged in and using the menu to search for challenges", 'error')
     return redirect('/')
 
 @app.route("/mode_swap", methods=['GET', 'POST'])

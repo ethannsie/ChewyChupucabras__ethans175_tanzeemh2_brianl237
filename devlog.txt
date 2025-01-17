@@ -121,7 +121,7 @@ tanzeemH -- 2025-0-13 23:04
 - Knocked out final kinks with search function
 
 tanzeemH -- 2025-0-14 10:55
-- Begun to modify battlelog 
+- Begun to modify battlelog
 
 ethanS -- 2025-01-14 17:44
 - Fixed challenging/accepting mechanisms for rate limiting
@@ -179,10 +179,18 @@ ethanS -- 2025-01-16 12:59
 ethanS -- 2025-01-16 13:18
 - Cleaned up __init__.py and added more flash messages
 
+brianL -- 2025-01-16 19:11
+- Updated game.html, gameFunctions.py, and init.py to show the types of pokemon and moves in the game page
+- made the healthbar in the game page update based on hp remaining
+
+ethanS -- 2025-01-16 19:32
+- Cleaned up some more code
+- Added a button to refresh challenges on user-end, also some javascript to load them down
+- Final Tasks: Clean Up Files, improve css, more to account settings, end screen message when game has ended
 tanzeemH -- 2025-01-16 21:53
 - Final changes to battlelog, acting based on attack, swap, surrender or defeat
 - Final changes to match history
-- Created add pokemon_to_game function for purpose of user's choosing pokemon for their teams 
+- Created add pokemon_to_game function for purpose of user's choosing pokemon for their teams
 - New javascript code to link chupadex button with adding pokemon
 - New gamePokeSets table
 - Major modifications of startGame function in gameFunctions.py
