@@ -165,3 +165,8 @@ ethanS -- 2025-01-16 13:18
 brianL -- 2025-01-16 19:11
 - Updated game.html, gameFunctions.py, and init.py to show the types of pokemon and moves in the game page
 - made the healthbar in the game page update based on hp remaining
+
+ethanS -- 2025-01-16 19:32
+- Cleaned up some more code
+- Added a button to refresh challenges on user-end, also some javascript to load them down
+- Final Tasks: Clean Up Files, improve css, more to account settings, end screen message when game has ended
