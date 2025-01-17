@@ -9,7 +9,7 @@ import datetime
 import os
 import sqlite3
 import sys
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
 import db
 import gameFunctions
 import APIs
@@ -28,7 +28,7 @@ if (not os.path.isfile("chupaPokemon.db")):
     APIs.fetch_poke()
     APIs.fetch_moves()
     APIs.fetch_type()
-db.setup()
+
 counter_initialized = False
 
 def initialize_counter():
@@ -113,6 +113,7 @@ def logout():
 @app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
     passValue = 'username' in session
+    print(db.getTableData("gamePokeSets", "user", passValue))
     search_query = request.args.get('search')
     stat = request.args.get('stat')
     operator = request.args.get('operator')
@@ -140,6 +141,22 @@ def chupadex():
         pokemon_data = db.getTable("pokeDex")  # This will select all rows
         search = 1
     return render_template("chupadex.html", pokemon_data=pokemon_data, search=search, logged_in = passValue, mode=mode)
+
+@app.route('/add_pokemon', methods=['POST'])
+def add_pokemon():
+    if 'username' not in session:
+        return jsonify({"success": False, "error": "User not logged in"}), 400
+
+    data = request.get_json()
+    pokemon_name = data.get('pokemon_name')
+    user = session['username']
+    if not pokemon_name:
+        return jsonify({"success": False, "error": "Pokemon name is missing"}), 400
+    success = db.add_pokemon_to_game(user, pokemon_name)
+    if success:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False, "error": "No available slots for Pokémon"}), 400
 
 @app.route("/ladder", methods=['GET', 'POST'])
 def ladder():
@@ -208,7 +225,7 @@ def game():
                     db.updateBattleLog(game_id, p1_active + " has fainted! Swap to your next chupamon!")
                     return redirect('/game')
                 else:
-                    db.updateGameHistory(game_id, p2_user, p1_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateGameHistory(game_id, p2_user, p1_user)
                     db.updateBattleLog(game_id, p1_user + " has lost! " + p2_user + " is the winner!")
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
@@ -219,7 +236,7 @@ def game():
                     db.updateBattleLog(game_id, p2_active + " has fainted! Swap to your next chupamon!")
                     return redirect('/game')
                 else:
-                    db.updateGameHistory(game_id, p1_user, p2_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateGameHistory(game_id, p1_user, p2_user)
                     db.updateBattleLog(game_id, p2_user + " has lost! " + p1_user + " is the winner!")
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
@@ -231,7 +248,7 @@ def game():
                 if request.form.get('form_type') == "surrender":
                     # Put message in battle log that user surrendered
                     db.updateBattleLog(game_id, p1_user + " has surrendered")
-                    db.updateGameHistory(game_id, p2_user, p1_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateGameHistory(game_id, p2_user, p1_user)
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -252,7 +269,7 @@ def game():
                 if request.form.get('form_type') == "surrender":
                     # Put message in battle log that user surrendered
                     db.updateBattleLog(game_id, p2_user + " has surrendered")
-                    db.updateGameHistory(game_id, p1_user, p2_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    db.updateGameHistory(game_id, p1_user, p2_user)
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')

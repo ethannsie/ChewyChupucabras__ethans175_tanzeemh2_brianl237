@@ -24,8 +24,9 @@ def setup():
     # Database to track what games are being challenged
     c.execute("CREATE TABLE IF NOT EXISTS gameChallenge (challenge_ID INTEGER PRIMARY KEY AUTOINCREMENT, challenger TEXT, challenged TEXT, accepted_status TEXT);")
     # Creates game_id (marks the start of the game) and tracks end results of each game, will also act as the main match history database
-    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY, winner TEXT, loser TEXT, time_started TEXT, time_completed TEXT);")
+    c.execute("CREATE TABLE IF NOT EXISTS gameHistory (game_ID INTEGER PRIMARY KEY, winner TEXT, loser TEXT);")
     # Database keeps track of all six collection of pokemons from each game
+    
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeSets (user TEXT, poke1 TEXT, poke2 TEXT, poke3 TEXT, poke4 TEXT, poke5 TEXT, poke6 TEXT);")
     # Database keeps track of the health of all six collection of pokemons from each game (active_status = True if active, otherwise False)
     c.execute("CREATE TABLE IF NOT EXISTS gamePokeStats (game_ID INTEGER, user TEXT, poke_name TEXT, active_hp REAL, active_status TEXT, move1 INTEGER, move2 INTEGER, move3 INTEGER, move4 INTEGER);")
@@ -98,12 +99,12 @@ def updatePokeMove(pokemon_name, move_id):
     db.commit()
     db.close()
 
-def updateGameHistory(game_number, winner, loser, current_time):
+def updateGameHistory(game_number, winner, loser):
     db = sqlite3.connect(DB_FILE, check_same_thread=False)
     c = db.cursor()
     #winnerID = getUserID(winner)
     #loserID = getUserID(loser)
-    c.execute("INSERT INTO gameHistory (game_ID, winner, loser, time_completed) VALUES (?, ?, ?, ?)", (game_number, winner, loser, current_time))
+    c.execute("INSERT INTO gameHistory (game_ID, winner, loser) VALUES (?, ?, ?)", (game_number, winner, loser))
     db.commit()
     db.close()
 
@@ -179,6 +180,29 @@ def setActiveHP(new_HP, game_id, username, pokename):
     c.execute(f"UPDATE gamePokeStats SET active_hp = '{new_HP}' WHERE game_ID = ? AND user = ? AND poke_name = ?", (game_id,username,pokename))
     db.commit()
     db.close()
+
+def add_pokemon_to_game(user, pokemon_name):
+    db = sqlite3.connect(DB_FILE, check_same_thread=False)
+    c = db.cursor()
+    # Update the user with the new Pokémon, assuming poke1 to poke6
+    # Check for the first available slot (poke1 to poke6) and insert the new Pokémon
+    c.execute(f"SELECT * FROM gamePokeSets WHERE user = ?", (user,))
+    user_data = c.fetchone()
+
+    if user_data:  # If the user already has a Pokémon team
+        for i in range(1, 7):
+            if user_data[i] is None:
+                c.execute(f"UPDATE gamePokeSets SET poke{i} = ? WHERE user = ?", (pokemon_name, user))
+                db.commit()
+                db.close()
+                return True
+        return False  # No space available for more Pokémon
+    else:
+        # If the user doesn't exist in the table, create a new entry
+        c.execute("INSERT INTO gamePokeSets (user, poke1) VALUES (?, ?)", (user, pokemon_name))
+        db.commit()
+        db.close()
+        return True
 
 # Getting information from tables ------------------------------------------
 #Selecting specific argument-based data
