@@ -46,6 +46,9 @@ ethanS -- 2025-01-08 15:46
 - Added accessibility comments on each route (semi-accessibility, must log in, doesn't need log in)
 - Added more description on routes (answered questions written down)
 
+tanzeemH -- 2025-01-09 06:50
+- Worked on chupadex search function for index value and pokemon name
+
 brianL -- 2025-01-09 8:06
 - updated moves table and API.py to include the damage class of the move
 - separated gamePokeSets table into 2 tables based on design doc
@@ -81,6 +84,10 @@ brianL -- 2025-01-11 22:06
 - updated game.py with a function that gives gives the players six random pokemon with four random learnable moves upon game start
 - began working on pokemonswap function
 
+tanzeemH -- 2025-01-12 22:50
+- Continuing to work on search function, added additional stat parameters to search with
+- Limit amount of chupamon that show up at a time
+
 brianL -- 2025-01-13 9:10
 - added game function that allows players to swap pokemon
 - added helper function that gets current active pokemon (may delete later cuz not sure if its needed for anything)
@@ -110,6 +117,12 @@ ethanS -- 2025-01-13 21:19
 ethanS -- 2025-01-13 21:33
 - Fixed html for game.html
 
+tanzeemH -- 2025-0-13 23:04
+- Knocked out final kinks with search function
+
+tanzeemH -- 2025-0-14 10:55
+- Begun to modify battlelog 
+
 ethanS -- 2025-01-14 17:44
 - Fixed challenging/accepting mechanisms for rate limiting
 - Need to make game challenge accepting dynamic + updating whether a user is in game when accepted_status
@@ -134,6 +147,10 @@ brianL -- 2025-01-14 23:54
 ethanS -- 2025-01-15 09:18
 - Updated surrendering, to update users table
 - Still breaks when the entries in the tables are the same (how is game_ID being updated?)
+
+tanzeemH -- 2025-0-14 10:55
+- Modifying battlelog table to take in user input
+- Calling battlelog related functions in game route
 
 ethanS -- 2025-01-15 11:00
 - Started working for entries! I don't kow why...
@@ -161,3 +178,13 @@ ethanS -- 2025-01-16 12:59
 
 ethanS -- 2025-01-16 13:18
 - Cleaned up __init__.py and added more flash messages
+
+tanzeemH -- 2025-01-16 21:53
+- Final changes to battlelog, acting based on attack, swap, surrender or defeat
+- Final changes to match history
+- Created add pokemon_to_game function for purpose of user's choosing pokemon for their teams 
+- New javascript code to link chupadex button with adding pokemon
+- New gamePokeSets table
+- Major modifications of startGame function in gameFunctions.py
+- New route for adding pokemon in __init__.py
+- Added extra error messages
