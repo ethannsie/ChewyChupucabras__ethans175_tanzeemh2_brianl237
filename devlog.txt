@@ -161,3 +161,7 @@ ethanS -- 2025-01-16 12:59
 
 ethanS -- 2025-01-16 13:18
 - Cleaned up __init__.py and added more flash messages
+
+brianL -- 2025-01-16 19:11
+- Updated game.html, gameFunctions.py, and init.py to show the types of pokemon and moves in the game page
+- made the healthbar in the game page update based on hp remaining
