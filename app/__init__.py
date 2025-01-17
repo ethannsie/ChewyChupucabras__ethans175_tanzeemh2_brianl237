@@ -118,7 +118,6 @@ def logout():
 @app.route("/chupadex", methods=['GET', 'POST'])
 def chupadex():
     passValue = 'username' in session
-    print(db.getTableData("gamePokeSets", "user", passValue))
     search_query = request.args.get('search')
     stat = request.args.get('stat')
     operator = request.args.get('operator')
