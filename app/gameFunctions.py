@@ -40,7 +40,7 @@ def startgame(player1, player2):
                     print("nope lol")
                     continue
                 db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
-        else:
+        else: # if pokemon team exists
             counter = 0
             starter = user_team[1]
             try:
@@ -64,7 +64,7 @@ def startgame(player1, player2):
                 except:
                     print("nope lol")
                     continue
-                db.updateGamePokeList(id, player, poke, 0.01*(db.getTableData("pokeDex", "poke_name", poke)[4] * 2) * 100 + 110, "True", move1_ID, move2_ID, move3_ID, move4_ID)
+                db.updateGamePokeList(id, player, poke, 0.01*(db.getTableData("pokeDex", "poke_name", poke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
                 counter += 1
             while counter < 6:
                 randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
