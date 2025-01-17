@@ -17,6 +17,15 @@
              const toggle = document.getElementById(id);
              toggle.classList.toggle('hidden');
          }
+         function jump(h) {
+             const target = document.getElementById(h);
+             if (target) {
+                 target.scrollIntoView({ behavior: 'smooth' });
+             } else {
+                 console.warn(`Element with ID "${h}" not found.`);
+             }
+         }
+
       </script>
       <style>
          @keyframes fadeOut {
@@ -52,11 +61,13 @@
          }
       </style>
    </head>
+
    {% if mode %}
    <body class="bg-white text-black min-h-screen flex flex-col">
       {% else %}
       <body class="bg-gray-900 text-white min-h-screen flex flex-col">
          {% endif %}
+
          <!-- Header -->
          {% if mode %}
          <header class="bg-gray-300 p-4 shadow-md">
@@ -163,7 +174,7 @@
             <div class="flex flex-col mb-10 items-center gap-6 p-8 bg-gray-800 mt-10 rounded-lg shadow-lg max-w-4xl mx-auto">
             <h2 class="text-6xl font-bold text-white mb-6">Active Challenges:</h2>
             {% endif %}
-            <div class="w-full">
+            <div class="w-full" id="anchor">
                <form action="/accept_your_fate" method="POST" class="space-y-6">
                   {% if mode %}
                   <div class="bg-gray-300 p-4 rounded-lg shadow-inner">
@@ -189,6 +200,17 @@
                         <input type="text" id="username" name="username" class="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-200" required>
                         {% endif %}
                      </div>
+
+                       <div class="flex justify-start">
+                          {% if mode %}
+                          <a href="/search_for_fate" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-lg transition duration-200">
+                          {% else %}
+                          <a href="/search_for_fate" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-lg transition duration-200">
+                          {% endif %}
+                          Search Match
+                        </a>
+                       </div>
+
                      <div class="flex justify-end">
                         {% if mode %}
                         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-lg transition duration-200">
@@ -397,5 +419,12 @@
             <p class="text-gray-400 text-sm">&copy; 2025 Chupamon Showdown. All rights reserved.</p>
             {% endif %}
          </footer>
+
+         {% if anchor %}
+         <script>
+           jump('anchor');
+         </script>
+         {% endif %}
+
    </body>
 </html>

@@ -21,6 +21,7 @@ app = Flask(__name__)
 mode = False
 app.secret_key = os.urandom(32)
 active_sessions = {}
+anchor = False
 
 #os.remove("chupaPokemon.db")
 if (not os.path.isfile("chupaPokemon.db")):
@@ -49,6 +50,7 @@ def home():
         challenges = db.getAllTableData("gameChallenge", "challenged", session['username'])
         updateChallenges = []
         passUsers = {}
+        global anchor
         for user in active_sessions:
             if user != session['username']:
                 passUsers[user] = db.getUserID(session['username'])
@@ -57,6 +59,9 @@ def home():
         for count, challenge in enumerate(challenges):
             if challenge[3] == 'None':
                 updateChallenges.append(challenge)
+        if anchor:
+            anchor = False
+            return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode, anchor = not anchor)
         return render_template("home.html", logged_in = passValue, username=session['username'], activeUsers=passUsers, challenges=updateChallenges, mode = mode)
     return render_template("home.html", logged_in = passValue, mode = mode)
 
@@ -301,6 +306,15 @@ def accept_your_fate():
             return redirect('/game')
     else:
         flash("You must use the menu to accept challenges", 'error')
+    return redirect('/')
+
+@app.route('/search_for_fate', methods=['GET', 'POST'])
+def search_for_fate():
+    if 'username' in session:
+        global anchor
+        anchor = True
+    else:
+        flash("Must be logged in and using the menu to search for challenges", 'error')
     return redirect('/')
 
 @app.route("/mode_swap", methods=['GET', 'POST'])
