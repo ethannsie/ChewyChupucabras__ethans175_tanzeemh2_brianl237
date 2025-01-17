@@ -11,73 +11,60 @@ import random
 #recieves username of players (could be changed to challengeID); gives them 6 random pokemon with 4 random moves
 def startgame(player1, player2):
     id = 1 if db.getLatestGameHistory() == -1 else db.getLatestGameHistory()[0] + 1
+
     for player in [player1, player2]:
-        #probably messier than necessary but gets a random move_id from pokemon_moves table four times for one pokemon which is set as the current active pokemon.
-        #does the same for each of the remaining five pokemon except it is inactive
-        #POSSIBLE ISSUE is that there are duplicate moves/pokemon selected from jst random chance
+        # Retrieve user's existing team from gamePokeSets
         user_team = db.getTableData("gamePokeSets", "user", player)
-
-        if user_team == -1: # no pokemon, play random
-            randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
-            try:
-                move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-            except:
-                print("nope lol")
-                continue
-            db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "True", move1_ID, move2_ID, move3_ID, move4_ID)
-
-            for i in range(5):
-                randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
+        counter = 0  # Counter for total Pokémon added to the team
+        
+        # If no team exists, initialize a new random team
+        if user_team == -1:
+            user_team = [None] * 7  # Placeholder for 6 Pokémon slots + user column
+        
+        for i in range(1, 7):  # Check all six slots in the team
+            if user_team[i] is not None:  # Slot is filled
+                poke_name = user_team[i]
                 try:
-                    move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                    # Get 4 random moves for this Pokémon
+                    move1_ID = db.getAllTableData("pokemon_moves", "poke_name", poke_name)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke_name)) - 1)][1]
+                    move2_ID = db.getAllTableData("pokemon_moves", "poke_name", poke_name)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke_name)) - 1)][1]
+                    move3_ID = db.getAllTableData("pokemon_moves", "poke_name", poke_name)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke_name)) - 1)][1]
+                    move4_ID = db.getAllTableData("pokemon_moves", "poke_name", poke_name)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke_name)) - 1)][1]
                 except:
-                    print("nope lol")
+                    print(f"Failed to initialize moves for existing Pokémon: {poke_name}")
                     continue
-                db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
-        else: # if pokemon team exists
-            counter = 0
-            starter = user_team[1]
-            try:
-                move1_ID = db.getAllTableData("pokemon_moves", "poke_name", starter)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", starter)) - 1)][1]
-                move2_ID = db.getAllTableData("pokemon_moves", "poke_name", starter)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", starter)) - 1)][1]
-                move3_ID = db.getAllTableData("pokemon_moves", "poke_name", starter)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", starter)) - 1)][1]
-                move4_ID = db.getAllTableData("pokemon_moves", "poke_name", starter)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", starter)) - 1)][1]
-            except:
-                print("nope lol")
-                continue
-            db.updateGamePokeList(id, player, starter, 0.01*(db.getTableData("pokeDex", "poke_name", starter)[4] * 2) * 100 + 110, "True", move1_ID, move2_ID, move3_ID, move4_ID)
-            counter += 1
-
-            existing_pokemon = user_team[2:7]
-            for poke in existing_pokemon:
-                try:
-                    move1_ID = db.getAllTableData("pokemon_moves", "poke_name", poke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke)) - 1)][1]
-                    move2_ID = db.getAllTableData("pokemon_moves", "poke_name", poke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke)) - 1)][1]
-                    move3_ID = db.getAllTableData("pokemon_moves", "poke_name", poke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke)) - 1)][1]
-                    move4_ID = db.getAllTableData("pokemon_moves", "poke_name", poke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", poke)) - 1)][1]
-                except:
-                    print("nope lol")
-                    continue
-                db.updateGamePokeList(id, player, poke, 0.01*(db.getTableData("pokeDex", "poke_name", poke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
+                # Add Pokémon to gamePokeStats
+                db.updateGamePokeList(
+                    id, player, poke_name,
+                    0.01 * (db.getTableData("pokeDex", "poke_name", poke_name)[4] * 2) * 100 + 110,
+                    "True" if counter == 0 else "False",  # Mark first Pokémon as active
+                    move1_ID, move2_ID, move3_ID, move4_ID
+                )
                 counter += 1
-            while counter < 6:
-                randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
-                try:
-                    move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                    move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
-                except:
-                    print("nope lol")
-                    continue
-                db.updateGamePokeList(id, player, randomPoke, 0.01*(db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110, "False", move1_ID, move2_ID, move3_ID, move4_ID)
+            else:  # Slot is empty; add a random Pokémon
+                while True:
+                    randomPoke = db.getTable("pokeDex")[random.randint(0, len(db.getTable("pokeDex")) - 1)][1]
+                    try:
+                        # Get 4 random moves for this Pokémon
+                        move1_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                        move2_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                        move3_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                        move4_ID = db.getAllTableData("pokemon_moves", "poke_name", randomPoke)[random.randint(0, len(db.getAllTableData("pokemon_moves", "poke_name", randomPoke)) - 1)][1]
+                    except:
+                        print(f"Failed to initialize random Pokémon: {randomPoke}")
+                        continue
+                    # Add Pokémon to gamePokeStats
+                    db.updateGamePokeList(
+                        id, player, randomPoke,
+                        0.01 * (db.getTableData("pokeDex", "poke_name", randomPoke)[4] * 2) * 100 + 110,
+                        "True" if counter == 0 else "False",  # Mark first Pokémon as active
+                        move1_ID, move2_ID, move3_ID, move4_ID
+                    )
+                    break  # Exit the random Pokémon loop once successful
                 counter += 1
+            # Stop once we have 6 Pokémon
+            if counter >= 6:
+                break
 
 
 
@@ -203,7 +190,10 @@ def getActivePokemonMovesTypes(game_id, username):
         if pokemon[1] == username and pokemon[4] == "True":
             return [db.getTableData("moves", "id", pokemon[5])[2], db.getTableData("moves", "id", pokemon[6])[2], db.getTableData("moves", "id", pokemon[7])[2], db.getTableData("moves", "id", pokemon[8])[2]]
 def getPokeSprite(pokeName):
-    return db.getTableData("pokedex", "poke_name", pokeName)[10]
+    pokeData = db.getTableData("pokeDex", "poke_name", pokeName)
+    if not isinstance(pokeData, (list, tuple)) or len(pokeData) <= 10:
+        raise ValueError(f"Invalid data for pokeName '{pokeName}': {pokeData}")
+    return pokeData[10]
 
 def getActivePokemonHP(game_id, username):
     for pokemon in db.getAllTableData("gamePokeStats", "game_ID", game_id):
