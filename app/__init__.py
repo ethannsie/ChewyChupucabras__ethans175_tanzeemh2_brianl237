@@ -197,7 +197,7 @@ def game():
             battlelog = db.getAllTableData("battlelog", "game_ID", game_id)
 
             # ISSUE: MAKE SURE YOU ACTUALLY NEED TO MAKE A NEW TURN-- same code to check if a turn has passed
-            db.initializeGameTracker(game_id)
+            # db.initializeGameTracker(game_id)
             # print("player 1: " + p1_user + "p1_sprite: " + p1_active)
             # print("player 2: " + p2_user + "p2_sprite: " + p2_active)
 
@@ -221,6 +221,7 @@ def game():
                 else:
                     db.updateGameHistory(game_id, p2_user, p1_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     db.updateBattleLog(game_id, p1_user + " has lost! " + p2_user + " is the winner!")
+                    flash(p1_user + " has lost! " + p2_user + " is the winner!", 'success')
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
@@ -232,6 +233,7 @@ def game():
                 else:
                     db.updateGameHistory(game_id, p1_user, p2_user, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
                     db.updateBattleLog(game_id, p2_user + " has lost! " + p1_user + " is the winner!")
+                    flash(p2_user + " has lost! " + p1_user + " is the winner!", 'success')
                     gameFunctions.updateElo(game_id)
                     db.resetUsers(p1_user, p2_user)
                     return redirect('/')
